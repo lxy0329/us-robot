@@ -167,7 +167,7 @@ dialog h2{font-size:20px;line-height:25px}
 [data-name^="小禾电量"]+p{pointer-events:none}
 
 /* Shared iPhone shell, list surfaces and type hierarchy. */
-:root{--surface:#f5f5f4;--ink:#202020;--muted:#575754;--line:#dededb;--accent:#333;--body:1.0625rem;--caption:.8125rem}
+:root{--surface:#f5f5f4;--ink:#202020;--muted:#575754;--line:#dededb;--accent:#333;--body:.9375rem;--caption:.75rem}
 body{background:#dededc}.demo-note,.symbols{display:none}
 #viewport{width:min(390px,100vw);height:min(844px,100dvh);aspect-ratio:auto;margin:auto;border-radius:0;box-shadow:none}
 body{display:grid;place-content:center}
@@ -282,7 +282,7 @@ body{display:grid;place-content:center}
 .household-scenes button{display:block;width:100%;min-height:44px;border:0;border-top:1px solid var(--line);background:white;color:var(--accent);text-align:left;cursor:pointer}
 
 /* Use three text sizes across the app, with a shared line height per role. */
-:root{--page-title:2.125rem;--body-leading:1.4;--caption-leading:1.45}
+:root{--page-title:1.625rem;--body-leading:1.5;--caption-leading:1.5}
 body,button,input,select,textarea{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
 .screen .ios-text{line-height:var(--caption-leading)!important}
 .screen :is([data-name="Task heading"],[data-name="Task sections"]>div)>p:first-child,
@@ -408,6 +408,101 @@ dialog :is(input,select,textarea),dialog h2{
 .screen .help-scroll [data-name="Task metadata"] p{
   width:fit-content;padding:2px 4px;border-radius:5px;background:#0b2119b8
 }
+
+/* Project conversations and the avatar's hold-to-create shortcut. */
+.conversation-home{padding:0 16px 16px;display:grid;gap:16px}
+.conversation-note{font-size:var(--caption);color:var(--muted)}
+.conversation-project{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.conversation-project summary{font-size:var(--body);font-weight:600;padding:13px 14px;background:var(--mint-tint);cursor:pointer}
+.conversation-project>button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;width:100%;padding:12px 14px;min-height:70px;border:0;border-top:1px solid var(--line);background:white;color:var(--ink);text-align:left;cursor:pointer}
+.conversation-project strong{font-size:15px;overflow-wrap:anywhere}
+.conversation-project time,.conversation-project small,.conversation-state{font-size:12px;color:var(--muted);line-height:1.45}
+.conversation-project small{overflow-wrap:anywhere}.conversation-state{color:var(--accent);text-align:right}
+.conversation-archive{border:1px solid var(--line);background:white;color:var(--accent);padding:14px;text-align:left;border-radius:12px;min-height:48px;cursor:pointer}
+.archive-list{display:grid;gap:8px}
+.archive-list button{display:grid;text-align:left;background:var(--mint-tint)!important;color:var(--ink)!important;gap:6px;margin:0;padding:12px}
+.archive-list small{font-size:var(--caption)}
+.chat-panel{grid-template-rows:auto auto auto minmax(0,1fr) auto}
+.conversation-controls{display:flex;justify-content:flex-end;gap:6px;padding:0 10px 6px}
+#modal .conversation-controls button{font-size:12px;min-height:30px;padding:5px 10px;margin:0;background:white}
+.chat-input-row{grid-template-columns:minmax(0,1fr) auto auto}
+.chat-plus{width:40px;padding:4px!important;font-size:24px!important;min-width:0}
+.chat-add-menu{display:flex;gap:8px;padding:6px 0}
+.chat-add-menu button{font-size:13px;margin:0}
+.location-task{display:block;font-size:12px!important;padding:6px!important;margin-top:5px;min-height:36px!important}
+.location-map{position:relative;width:100%;aspect-ratio:382/480;background:#f5f8f5;overflow:hidden;cursor:crosshair}
+.location-map>div{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;pointer-events:none}
+.location-map img{width:100%;height:100%}
+.location-marker{position:absolute;width:16px;height:16px;background:#267358;border:3px solid white;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+.selected-location{font-size:var(--body);margin:10px 0}
+.send-location{width:100%}button:disabled{opacity:.45;cursor:default}
+.screen.with-tabs [data-name="Navigation items"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+.quick-task-avatar{width:42px;height:42px;min-width:0;border:2px solid white;align-self:center;justify-self:center;border-radius:50%;background:var(--mint);color:#294e40;font:600 17px system-ui;overflow:hidden;padding:0;touch-action:none;user-select:none;-webkit-touch-callout:none;cursor:pointer}
+.quick-task-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+#modal .chat-input-row textarea{width:100%;min-width:0}
+.location-preview{position:relative;background:#f0f7f2;margin-top:5px;height:110px;border-radius:8px;overflow:hidden;max-width:180px}
+.location-preview img{display:block;width:100%;height:100%;object-fit:fill}
+.voice-task-panel{position:absolute;bottom:88px;left:16px;right:16px;z-index:10;background:#173e31;color:white;border-radius:22px;padding:22px 18px;box-shadow:0 8px 30px #173e3130;text-align:center;pointer-events:none}
+.voice-task-panel strong{font-size:17px}.voice-task-panel p{font-size:13px;color:#cee3da;margin-top:10px}
+.voice-transcript{font-size:15px;line-height:1.5;margin-top:12px;overflow-wrap:anywhere;max-height:130px;overflow:hidden}
+
+/* Give the conversation list more breathing room without enlarging its type. */
+.conversation-home{gap:20px;padding-bottom:24px}
+.conversation-projects{display:grid;gap:20px}
+.conversation-project summary{padding:16px}
+.conversation-project>button{padding:17px 16px;gap:8px 14px;min-height:88px}
+.conversation-project strong{line-height:1.45}
+.conversation-project small{line-height:1.6}
+.conversation-project time,.conversation-state{align-self:start}
+.pending-conversations summary{background:var(--mint)}
+.conversation-archive{padding:17px 16px;min-height:54px}
+.chat-log{padding:14px 16px 20px}
+.chat-row{margin-bottom:18px;gap:10px}
+.chat-row p{padding:10px 12px;line-height:1.5}
+.conversation-controls{gap:10px;padding-bottom:10px}
+
+/* Task overview uses a single column with explicit progress. */
+.task-tiles{grid-template-columns:minmax(0,1fr);gap:12px}
+.task-tile{display:grid;gap:9px;aspect-ratio:auto;min-height:112px;padding:15px 16px;background:#f2f7f4;border:1px solid var(--line);border-radius:15px;color:var(--ink);text-align:left}
+.task-tile::after{display:none}
+.task-card-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.task-card-heading strong{font-size:var(--body);line-height:1.5}
+.task-card-state{font-size:12px;line-height:1.4;padding:3px 8px;background:var(--mint);color:var(--accent);border-radius:7px;white-space:nowrap}
+.task-card-description{font-size:13px;line-height:1.5;color:var(--muted)}
+.task-card-progress{display:flex;align-items:center;gap:12px}
+.task-card-progress small{font-size:12px;color:var(--muted);white-space:nowrap}
+.task-card-progress progress{flex:1;min-width:0;width:100%;height:5px;border:0;border-radius:5px;overflow:hidden;appearance:none;background:#dce6df}
+.task-card-progress progress::-webkit-progress-bar{background:#dce6df;border-radius:5px}
+.task-card-progress progress::-webkit-progress-value{background:#609b80;border-radius:5px}
+.task-card-progress progress::-moz-progress-bar{background:#609b80;border-radius:5px}
+
+/* A quieter type hierarchy shared by exported and newly added screens. */
+#app .screen :is(p,small,span),#modal :is(p,small,label,textarea,select,input){font-weight:400!important}
+#app .screen :is(h1,h2,h3,strong,summary),#modal :is(h2,strong){font-weight:500!important}
+#app .screen .app-heading h1{font-size:var(--page-title);line-height:1.3;letter-spacing:0}
+#app .screen .secondary-heading h1{font-size:var(--body)}
+#app .screen :is([data-name="Task heading"]>p:first-child,[data-name="设置内容"] [data-name$="列表"]>a>p:first-of-type,[data-name="设置内容"]>a>p:first-of-type){font-weight:500!important}
+#app .screen [data-name="Navigation item"]{font-size:11px;font-weight:400}
+#app .screen [data-name="Navigation item"][aria-current="page"] span{font-weight:500!important}
+#modal h2{font-size:17px;line-height:1.5}
+#modal :is(button,.chat-row p){font-weight:400;font-size:var(--body);line-height:1.5}
+#modal .chat-panel header :is([data-close],[data-back],button[aria-label="收起聊天"]){font-size:22px}
+#modal .chat-plus{font-size:24px!important}
+#app .screen .app-heading{padding-top:7px;padding-bottom:12px}
+#app .screen .task-tile{padding:16px;background:#f5f9f6;border-color:#e2ebe5;gap:10px}
+#app .screen .task-card-state{padding:3px 7px;background:#e4f0e9}
+#app .screen .completed-entry strong{font-size:var(--body)}
+#app .screen .conversation-project strong{font-size:14px;font-weight:500}
+#app .screen .conversation-project summary{font-size:15px;background:#f1f6f3}
+#app .screen .pending-conversations summary{background:#e2efe8}
+#app .screen .conversation-project>button{gap:8px 14px;padding:17px 16px}
+#app .screen .week-records strong{font-size:14px}
+#app .screen .extra-card button{font-size:var(--body);font-weight:400}
+#app .screen .extra-card small{font-size:var(--caption)}
+#app .screen .current .primary{font-size:var(--body);font-weight:500}
+#app .screen .household-scenes button{font-size:14px;font-weight:400}
+#app .screen .screen-content{scrollbar-width:thin;scrollbar-color:#d9e3dd transparent}
+#modal .conversation-controls button{font-size:12px}
 </style></head><body><div id="viewport"><svg class="symbols" aria-hidden="true"><defs>
 <symbol id="washer" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="3"/><path d="M3 7h18M6 4.5h2"/><circle cx="12" cy="14" r="4.8"/><path d="M8 14q2-2 4 0t4 0"/></symbol>
 <symbol id="done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></symbol>
@@ -2809,9 +2904,10 @@ const planCard = menu(taskBody.querySelector('[data-name="任务计划"]') || ta
 function renderPlans() {
   planCard.replaceChildren();
   for (const [index,plan] of plans.entries()) {
-    menuItem(planCard, plan.name, plan.room+' · '+plan.time+' · '+plan.repeat, () => editPlan(index));
+    menuItem(planCard, plan.name, [plan.room,plan.time,plan.repeat].filter(Boolean).join(' · '), () => editPlan(index));
   }
   planCard.hidden = !plans.length;
+  document.dispatchEvent(new Event('taskplanschange'));
 }
 function editPlan(index, template) {
   const existing = plans[index];
@@ -3702,9 +3798,9 @@ function taskOverview(){
     sceneList.append(group);return {group,templates};
   });
   const destinations=[
-    ['清洗床单','等待洗衣机',washer,1],
-    ['杯子收纳','客厅 → 厨房',cup,0],
-    ['待完成','查看任务计划',plan,2]
+    ['清洗床单','等待洗衣机',washer],
+    ['杯子收纳','客厅 → 厨房',cup],
+    ['待完成','查看任务计划',plan]
   ];
   const completed=document.createElement('button');
   completed.type='button';completed.className='completed-entry';
@@ -3717,6 +3813,7 @@ function taskOverview(){
     for(const tile of tiles.children)tile.hidden=false;
     for(const row of history.querySelectorAll('li'))row.hidden=false;
     storage.append(history);
+    refreshTaskTiles();
     taskBody.closest('.screen-content').scrollTop=0;
   }
   function openSection(title,node){
@@ -3727,12 +3824,31 @@ function taskOverview(){
     if(node===history)heading.remove();
     taskBody.closest('.screen-content').scrollTop=0;back.focus({preventScroll:true});
   }
-  for(const [title,subtitle,node,index] of destinations){
+  for(const [title,subtitle,node] of destinations){
     const tile=document.createElement('button');tile.type='button';tile.className='task-tile';
-    tile.innerHTML='<span class="tile-photo scene-media" aria-hidden="true"></span><span class="tile-caption"><small>'+subtitle+'</small><strong>'+title+'</strong></span>';
-    attachTaskImage(tile.firstElementChild,pendingCards[index],'',{laundry:node===washer});
+    tile.innerHTML='<span class="task-card-heading"><strong></strong><small class="task-card-state"></small></span>'+
+      '<span class="task-card-description"></span><span class="task-card-progress"><progress max="100"></progress><small></small></span>';
+    tile.querySelector('strong').textContent=title;
+    tile.querySelector('progress').setAttribute('aria-label',title+'进度');
+    tile.querySelector('.task-card-description').textContent=subtitle;
     tile.onclick=()=>openSection(title,node);tiles.append(tile);
   }
+  function refreshTaskTiles(){
+    const states=[
+      {state:'等待设备',value:2/3*100,label:'已完成 2 / 3 步',detail:'床单已放入洗衣机，等待洗涤结束'},
+      {state:settings.paused?'已暂停':'执行中',value:70,label:'70%',detail:'客厅 → 厨房边柜'},
+      {state:'未开始',value:0,label:'0%',detail:'待完成 '+(plan.querySelectorAll('[data-name="任务 / 计划条目"]').length+plans.length)+' 项计划'}
+    ];
+    states.forEach((item,index)=>{
+      const tile=tiles.children[index];
+      tile.querySelector('.task-card-state').textContent=item.state;
+      tile.querySelector('.task-card-description').textContent=item.detail;
+      tile.querySelector('progress').value=item.value;
+      tile.querySelector('progress').setAttribute('aria-valuetext',item.label);
+      tile.querySelector('.task-card-progress small').textContent=item.label;
+    });
+  }
+  document.addEventListener('taskplanschange',refreshTaskTiles);
   input.oninput=()=>{
     const term=input.value.trim().toLowerCase();
     destinations.forEach(([title,subtitle,node],index)=>{
@@ -3791,4 +3907,338 @@ for(const screen of screens){
   root.prepend(status.firstElementChild,heading);root.append(bottom);
   screen.classList.add(nav?'with-tabs':'child-page');
 }
+
+let activeVoiceTask=null;
+function updateVoiceHint(){
+  if(!activeVoiceTask)return;
+  activeVoiceTask.panel.querySelector('strong').textContent=activeVoiceTask.cancelRequested?'松开取消':activeVoiceTask.stopping?'正在识别…':'正在听你说';
+}
+function clearVoiceTask(state){
+  clearTimeout(state.limit);clearTimeout(state.wait);
+  state.panel.remove();
+  if(activeVoiceTask===state)activeVoiceTask=null;
+}
+function cancelVoiceTask(){
+  const state=activeVoiceTask;if(!state)return;
+  clearVoiceTask(state);state.recognition?.abort();
+}
+function confirmVoiceTask(text){
+  form('确认语音任务','<label>任务内容<textarea name="task" rows="3" required maxlength="200"></textarea></label>',data=>{
+      const task=data.get('task').trim();
+      if(!task)return;
+      const time=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false});
+      const room=rooms.find(name=>task.includes(name))||'';
+      plans.push({name:task.slice(0,40),room,time,repeat:'仅一次',instructions:task});
+      save();renderPlans();toast('任务已布置');
+    });
+  modal.querySelector('[name=task]').value=text;
+  modal.querySelector('[name=task]').oninput=event=>event.target.setCustomValidity(event.target.value.trim()?'':'请输入任务内容');
+  modal.querySelector('[value=submit]').textContent='布置任务';
+}
+function voiceUnavailable(message){
+  openHelpPanel('语音输入', '<p class="help-context"></p><button data-type-task>文字布置任务</button>');
+  modal.querySelector('.help-context').textContent=message;
+  modal.querySelector('[data-type-task]').onclick=()=>{modal.close();confirmVoiceTask('');};
+}
+function startVoiceTask(){
+  if(activeVoiceTask)return;
+  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Recognition){voiceUnavailable('当前浏览器不支持语音识别。可以在支持语音的浏览器中打开此页面，或输入文字布置任务。');return;}
+  if(modal.open)modal.close();
+  const panel=document.createElement('section');
+  panel.className='voice-task-panel';
+  panel.setAttribute('aria-live','polite');
+  panel.innerHTML='<strong>正在连接麦克风…</strong><p>按住说话 · 松开结束 · 上滑取消</p><div class="voice-transcript"></div>';
+  document.getElementById('viewport').append(panel);
+  const recognition=new Recognition();
+  const state={panel,recognition,text:'',error:'',stopping:false,cancelRequested:false};
+  activeVoiceTask=state;
+  recognition.lang='zh-CN';recognition.interimResults=true;recognition.continuous=true;
+  recognition.onstart=()=>{
+    if(activeVoiceTask!==state){recognition.abort();return;}
+    updateVoiceHint();
+    if(state.stopping)recognition.stop();
+  };
+  recognition.onresult=event=>{
+    if(activeVoiceTask!==state)return;
+    state.text=Array.from(event.results).map(result=>result[0].transcript).join('').slice(0,200);
+    panel.querySelector('.voice-transcript').textContent=state.text;
+  };
+  recognition.onerror=event=>{state.error=event.error;};
+  recognition.onend=()=>{
+    if(activeVoiceTask!==state)return;
+    clearVoiceTask(state);
+    if(state.text.trim()){confirmVoiceTask(state.text.trim());return;}
+    const messages={
+      'not-allowed':'麦克风权限未开启。请允许此页面使用麦克风后再按住头像说话。',
+      'service-not-allowed':'当前浏览器无法使用语音服务，请换用支持语音的浏览器。',
+      'audio-capture':'未找到可用的麦克风，请检查麦克风连接。',
+      'network':'语音服务连接失败，请检查网络后重试。',
+      'no-speech':'没有听清任务内容，请重新按住头像说话。'
+    };
+    voiceUnavailable(messages[state.error]||'没有识别到任务内容，请重新按住头像说话。');
+  };
+  try{recognition.start();state.limit=setTimeout(finishVoiceHold,45000);}
+  catch{clearVoiceTask(state);voiceUnavailable('暂时无法启动麦克风，请检查浏览器权限后重试。');}
+}
+function finishVoiceHold(){
+  const state=activeVoiceTask;if(!state||state.stopping)return;
+  if(state.cancelRequested){cancelVoiceTask();toast('已取消语音输入');return;}
+  state.stopping=true;updateVoiceHint();
+  try{state.recognition.stop();}catch{cancelVoiceTask();return;}
+  state.wait=setTimeout(()=>{
+    if(activeVoiceTask!==state)return;
+    const text=state.text;cancelVoiceTask();
+    if(text.trim())confirmVoiceTask(text.trim());
+    else voiceUnavailable('语音识别暂未返回结果，请重试或输入文字。');
+  },8000);
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelVoiceTask();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')cancelVoiceTask();});
+
+// Keep the existing request IDs and replies when migrating the help list to chats.
+const conversationMeta=settings.conversations ||= {};
+const chatCards=new Map(pendingCards.map(card=>[card.dataset.nodeId,card]));
+for(const card of helpScreens[1].querySelectorAll('[data-name="TaskCard"]:not([data-request-copy])')){
+  if(card.dataset.nodeId){
+    const copy=card.cloneNode(true);
+    copy.querySelector('[data-name="Task content"] > p').textContent=card.dataset.nodeId==='167:757'?
+      '这个杯子应该放在哪个柜子里？':'这些衣服应该放进哪个洗衣篮？';
+    chatCards.set(copy.dataset.nodeId,copy);
+  }
+}
+const projectNames=['收纳与桌面','衣物洗护','玩具整理','餐食准备'];
+function projectFor(card){
+  const text=sourceTitle(card);
+  if(/衣|洗|床单/.test(text))return '衣物洗护';
+  if(/玩具|积木/.test(text))return '玩具整理';
+  if(/菜|餐|盐/.test(text))return '餐食准备';
+  return '收纳与桌面';
+}
+function initialChatTime(card){
+  const meta=card.querySelector('[data-name="Task metadata"]')?.textContent||'';
+  const date=meta.match(/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/);
+  if(date)return new Date(new Date().getFullYear(),+date[1]-1,+date[2],+date[3],+date[4]).getTime();
+  const days=meta.includes('昨天')?1:meta.includes('3 天')?3:0;
+  return Date.now()-days*86400000;
+}
+for(const [id,card] of chatCards){
+  conversationMeta[id] ||= {project:projectFor(card),created:initialChatTime(card),archived:false};
+  if(!chatHistory[id]?.length&&requests[id]?.answer){
+    const time=conversationMeta[id].created;
+    chatHistory[id]=[{text:requests[id].answer,from:'user',time},{text:'收到，我会按这条指导处理。',from:'robot',time}];
+  }
+}
+function lastChatTime(id){
+  return Math.max(conversationMeta[id].created,requests[id]?.updated||0,...(chatHistory[id]||[]).map(message=>message.time||0));
+}
+function isStoredChat(id){
+  return conversationMeta[id].archived||lastChatTime(id)<Date.now()-14*86400000;
+}
+function conversationButton(label,action,className=''){
+  const button=document.createElement('button');
+  button.type='button';button.textContent=label;button.className=className;button.onclick=action;
+  return button;
+}
+function renderConversations(){
+  for(const screen of helpScreens){
+    const panel=screen.querySelector('.conversation-home');
+    if(!panel)continue;
+    const query=panel.querySelector('input').value.trim();
+    const groups=panel.querySelector('.conversation-projects');
+    groups.replaceChildren();
+    let visible=0;
+    for(const project of ['待回复',...projectNames]){
+      const items=[...chatCards].filter(([id,card])=>(project==='待回复'?!requests[id]:
+        Boolean(requests[id])&&conversationMeta[id].project===project)&&
+        !isStoredChat(id)&&(sourceTitle(card)+originalProblem(card)+(chatHistory[id]||[]).map(m=>m.text).join('')).includes(query))
+        .sort(([a],[b])=>lastChatTime(b)-lastChatTime(a));
+      if(!items.length)continue;
+      visible+=items.length;
+      const group=document.createElement('details');group.className='conversation-project';group.open=true;
+      if(project==='待回复')group.classList.add('pending-conversations');
+      const summary=document.createElement('summary');summary.textContent=project+' · '+items.length;group.append(summary);
+      for(const [id,card] of items){
+        const button=conversationButton('',()=>openGuidanceChat(card,sourceTitle(card)));
+        const title=document.createElement('strong');title.textContent=sourceTitle(card);
+        const stamp=document.createElement('time');stamp.textContent=new Date(lastChatTime(id)).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'});
+        const preview=document.createElement('small');
+        const message=chatHistory[id]?.at(-1)?.text||originalProblem(card);
+        preview.textContent=(project==='待回复'?conversationMeta[id].project+' · ':'')+message;
+        const state=document.createElement('span');state.textContent=requests[id]?'已回复':'待回复';state.className='conversation-state';
+        button.append(title,stamp,preview,state);group.append(button);
+      }
+      groups.append(group);
+    }
+    if(!visible){const empty=document.createElement('p');empty.textContent='暂无匹配的近期对话';groups.append(empty);}
+    const count=[...chatCards.keys()].filter(isStoredChat).length;
+    panel.querySelector('.conversation-archive').textContent='归档记录 · '+count+' 条　›';
+  }
+}
+function openChatArchive(){
+  openHelpPanel('归档记录','<p class="help-context">两周前的记录和手动存档的对话</p><div class="archive-list"></div>');
+  const list=modal.querySelector('.archive-list');
+  const items=[...chatCards].filter(([id])=>isStoredChat(id)).sort(([a],[b])=>lastChatTime(b)-lastChatTime(a));
+  for(const [id,card] of items){
+    const button=conversationButton('',()=>openGuidanceChat(card,sourceTitle(card),openChatArchive));
+    const title=document.createElement('strong');title.textContent=sourceTitle(card);
+    const detail=document.createElement('small');detail.textContent=conversationMeta[id].project+' · '+new Date(lastChatTime(id)).toLocaleDateString('zh-CN');
+    button.append(title,detail);list.append(button);
+  }
+  if(!items.length)list.textContent='暂无归档记录';
+}
+for(const screen of helpScreens){
+  const content=screen.querySelector('.screen-content');
+  const storage=document.createElement('div');storage.hidden=true;storage.append(...content.childNodes);
+  const panel=document.createElement('section');panel.className='conversation-home';
+  panel.innerHTML='<label class="task-search"><input type="search" aria-label="搜索近期对话" placeholder="搜索近两周的对话"></label><p class="conversation-note">近两周 · 按家务项目查看</p><div class="conversation-projects"></div>';
+  panel.querySelector('input').oninput=renderConversations;
+  panel.append(conversationButton('归档记录',openChatArchive,'conversation-archive'));
+  content.append(panel,storage);screen.querySelector('h1').textContent='对话';
+}
+for(const tab of document.querySelectorAll('[data-name="Navigation item"]')){
+  if(tab.textContent.trim()==='求助')tab.querySelector('span').textContent='对话';
+}
+const renderOldRequests=renderRequests;
+renderRequests=function(){renderOldRequests();renderConversations();};
+
+const openOldChat=openGuidanceChat;
+openGuidanceChat=function(card,title,back){
+  openOldChat(card,title,back);
+  const id=card.dataset.nodeId;
+  modal.querySelector('.chat-topic').textContent=(conversationMeta[id]?.project||projectFor(card))+' · '+title;
+  const controls=document.createElement('div');controls.className='conversation-controls';
+  controls.append(conversationButton(conversationMeta[id]?.archived?'取消存档':'存档',()=>{
+    if(!conversationMeta[id])return;
+    conversationMeta[id].archived=!conversationMeta[id].archived;save();renderConversations();
+    openGuidanceChat(card,title,back);
+  }),conversationButton('现场',()=>openRobotView(card,title)));
+  modal.querySelector('.chat-topic').after(controls);
+  const plus=conversationButton('＋',()=>{
+    const existing=modal.querySelector('.chat-add-menu');
+    if(existing){existing.remove();return;}
+    const menu=document.createElement('div');menu.className='chat-add-menu';
+    menu.append(conversationButton('位置',()=>openChatLocation(card,title,back)),
+      conversationButton('遥操申请',()=>openHandoff(card,title)));
+    modal.querySelector('.chat-composer').prepend(menu);
+  },'chat-plus');
+  plus.setAttribute('aria-label','添加位置或遥操申请');
+  modal.querySelector('.chat-input-row').append(plus);
+  const draft=conversationMeta[id]?.draft;
+  if(draft)modal.querySelector('textarea').value=draft;
+  const input=modal.querySelector('textarea');
+  input.addEventListener('input',()=>{if(conversationMeta[id]){conversationMeta[id].draft=input.value;save();}});
+  const form=modal.querySelector('.chat-composer'),submit=form.onsubmit;
+  form.onsubmit=event=>{
+    const hadText=Boolean(input.value.trim());submit(event);
+    if(hadText&&conversationMeta[id]){conversationMeta[id].draft='';save();renderConversations();}
+  };
+  const log=modal.querySelector('.chat-log');
+  log.querySelectorAll('.chat-row').forEach((row,index)=>{
+    const message=chatHistory[id]?.[index-1];
+    if(message?.location){
+      const preview=document.createElement('div');preview.className='location-preview';
+      const image=document.createElement('img');image.src=floor.querySelector('img').src;
+      image.alt=message.location.room+'的地图位置';
+      const pin=document.createElement('span');pin.className='location-marker';
+      pin.style.left=message.location.x*100+'%';pin.style.top=message.location.y*100+'%';
+      preview.append(image,pin);
+      row.querySelector('div').append(preview,conversationButton('在此处布置任务',()=>taskAtLocation(message.location),'location-task'));
+    }
+  });
+  requestAnimationFrame(()=>{log.scrollTop=log.scrollHeight;});
+};
+function taskAtLocation(location){
+  modal.close();
+  editPlan(undefined,{name:'',room:location.room,instructions:'在'+location.room+'地图标记处执行（'+Math.round(location.x*100)+'%，'+Math.round(location.y*100)+'%）。'});
+}
+function openChatLocation(card,title,back){
+  const draft=modal.querySelector('textarea')?.value||'';
+  let selected=null;
+  openHelpPanel('发送位置','<p class="help-context">点地图选择执行位置，再发送给小禾。</p><div class="location-map"></div><p class="selected-location">尚未选择位置</p><button class="send-location" disabled>发送位置</button>',
+    {back:()=>{openGuidanceChat(card,title,back);modal.querySelector('textarea').value=draft;}});
+  const map=modal.querySelector('.location-map');
+  const picture=floor.querySelector('[data-node-id="137:814"]').cloneNode(true);
+  picture.removeAttribute('data-node-id');map.append(picture);
+  for(const node of picture.querySelectorAll('[data-node-id]'))node.removeAttribute('data-node-id');
+  const marker=document.createElement('span');marker.className='location-marker';marker.hidden=true;map.append(marker);
+  const send=modal.querySelector('.send-location');
+  map.onclick=event=>{
+    const bounds=map.getBoundingClientRect();
+    const x=(event.clientX-bounds.left)/bounds.width,y=(event.clientY-bounds.top)/bounds.height;
+    if(x<.03||x>.97||y<.06||y>.93||(x>.59&&y<.34))return;
+    const room=y<.58?(x<.495?'客厅':'厨房'):(x<.314?'书房':x<.518?'玄关':'卧室');
+    if(settings.excluded?.includes(room)){toast('该房间已限制进入');return;}
+    selected={room,x,y};marker.hidden=false;marker.style.left=x*100+'%';marker.style.top=y*100+'%';
+    modal.querySelector('.selected-location').textContent='已选择 · '+room;send.disabled=false;
+  };
+  send.onclick=()=>{
+    if(!selected)return;
+    const id=card.dataset.nodeId,time=Date.now();
+    chatHistory[id] ||= [];
+    chatHistory[id].push({text:'位置 · '+selected.room+'（地图标记 '+Math.round(selected.x*100)+'%，'+Math.round(selected.y*100)+'%）',from:'user',time,location:selected},
+      {text:'已收到'+selected.room+'的位置标记，我会结合你的任务说明确认执行地点。',from:'robot',time});
+    save();renderConversations();openGuidanceChat(card,title,back);modal.querySelector('textarea').value=draft;
+  };
+}
+
+function applyAvatar(){
+  for(const button of document.querySelectorAll('.quick-task-avatar')){
+    button.replaceChildren();
+    if(settings.taskAvatar){const img=document.createElement('img');img.src=settings.taskAvatar;img.alt='我的头像';button.append(img);}
+    else button.textContent='C';
+  }
+}
+function chooseAvatar(){
+  form('设置快捷头像','<label>选择一张照片<input type="file" accept="image/*" name="photo"></label><p class="help-context">头像用于底部快捷入口，按住说出任务，松开结束。</p>');
+  const picker=modal.querySelector('[name=photo]');
+  modal.querySelector('[value=submit]').disabled=true;
+  picker.onchange=()=>{
+    const file=picker.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
+        const size=Math.min(img.width,img.height);
+        canvas.getContext('2d').drawImage(img,(img.width-size)/2,(img.height-size)/2,size,size,0,0,128,128);
+        modal.querySelector('[value=submit]').disabled=false;
+        modal.querySelector('form').onsubmit=event=>{
+          if(event.submitter.value==='cancel')return;
+          settings.taskAvatar=canvas.toDataURL('image/jpeg',.85);save();applyAvatar();
+        };
+      };
+      img.onerror=()=>toast('这张照片无法读取，请重新选择');
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+}
+for(const nav of document.querySelectorAll('[data-name="Navigation items"]')){
+  const avatar=conversationButton('',()=>{},'quick-task-avatar');
+  avatar.setAttribute('aria-label','我的头像，按住说话布置任务，松开结束，上滑取消');
+  avatar.title='按住说话，松开结束，上滑取消';
+  let timer,start;
+  const cancel=()=>{clearTimeout(timer);timer=null;};
+  const begin=()=>{cancel();timer=setTimeout(()=>{timer=null;startVoiceTask();},450);};
+  avatar.onpointerdown=event=>{
+    if(event.button!==0)return;
+    start=[event.clientX,event.clientY];avatar.setPointerCapture(event.pointerId);begin();
+  };
+  avatar.onpointermove=event=>{
+    if(!start)return;
+    if(activeVoiceTask){activeVoiceTask.cancelRequested=event.clientY<start[1]-65;updateVoiceHint();}
+    else if(Math.hypot(event.clientX-start[0],event.clientY-start[1])>8)cancel();
+  };
+  avatar.onpointerup=()=>{cancel();finishVoiceHold();start=null;};
+  avatar.onpointercancel=()=>{cancel();cancelVoiceTask();start=null;};
+  avatar.onlostpointercapture=cancel;
+  avatar.oncontextmenu=event=>event.preventDefault();
+  avatar.onkeydown=event=>{if([' ','Enter'].includes(event.key)&&!event.repeat){event.preventDefault();begin();}};
+  avatar.onkeyup=event=>{if([' ','Enter'].includes(event.key)){cancel();finishVoiceHold();}};
+  avatar.onblur=()=>{cancel();cancelVoiceTask();};
+  nav.insertBefore(avatar,nav.children[2]);
+}
+menuItem(menu(settingsBody),'快捷头像','选择照片 ›',chooseAvatar);
+applyAvatar();renderConversations();save();
 </script></body></html>
