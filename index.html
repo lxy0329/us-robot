@@ -535,6 +535,83 @@ dialog :is(input,select,textarea),dialog h2{
 #modal .danger-action{color:#ac3434!important;background:#fff0f0!important}
 #modal .chat-handoff-progress{display:block;margin:8px auto 0;padding:6px 12px;font-size:12px;min-height:32px}
 .handoff-progress-actions{display:grid;gap:8px}.handoff-progress-actions button{margin:0}
+
+/* Map controls: destination mode switch, explicit home rename, quiet icon tools. */
+.screen [data-name="地图上方 · 移动提示"]{display:flex!important;flex-wrap:wrap!important;gap:6px!important;align-items:center}
+.screen [data-name="地图上方 · 移动提示"]>p{flex-shrink:1!important}
+.screen [data-name="地图上方 · 移动提示"]>p:nth-of-type(2){flex-basis:100%;order:2;margin-left:23px}
+.screen [data-name="地图上方 · 移动提示"]>[data-name="紧凑 2D/3D 切换"]{position:static!important;margin-left:auto;flex-shrink:0!important;width:84px!important;order:1}
+.map-home-row{position:absolute;inset:8px 12px auto;display:flex;align-items:center;gap:5px;min-height:38px}
+.map-home-row>p{position:static!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important;margin:0;flex-shrink:1}
+.screen .map-home-row [data-name="编辑地图"]{position:static!important;display:flex;align-items:center;gap:3px;width:auto!important;height:34px!important;padding:0 6px;border-radius:8px!important;background:transparent!important;flex-shrink:0;color:var(--muted);font-size:11px;cursor:pointer}
+.map-home-row [data-name="编辑地图"] svg{width:14px;height:14px}
+.map-header-tools{display:flex;gap:2px;margin-left:auto;flex-shrink:0}
+#app .map-icon-button{display:inline-flex;align-items:center;justify-content:center;width:36px;min-width:36px;min-height:38px;height:38px;padding:7px;border:0;border-radius:11px;background:var(--mint-tint,#edf5f1);color:var(--ink);cursor:pointer}
+.map-icon-button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#app .map-tools .map-icon-button{width:100%;min-width:0;min-height:44px;height:44px}
+.map-icon-button:hover{filter:brightness(.96)}
+.map-icon-button:active{transform:scale(.95)}
+.show-apartment>.map-tools{display:flex;justify-content:flex-end;grid-row:3}
+.show-apartment>.map-tools>button:not(.focus-control){display:none!important}
+#app .show-apartment>.map-tools>.focus-control{width:44px}
+.apartment-modes button:last-child{margin-left:0}
+.apartment-modes .reset-apartment{margin-left:auto!important}
+
+
+/* Smaller home tools and a grouped task-map toolbar. */
+#app .map-header-tools .map-icon-button{width:29px;min-width:29px;height:30px;min-height:30px;padding:6px;border-radius:8px;background:transparent}
+#app .map-header-tools .map-icon-button svg{width:18px;height:18px}
+#app .map-header-tools .map-icon-button:hover{background:var(--mint-tint)}
+#app .map-home-row [data-name="编辑地图"]{width:28px!important;min-height:32px;padding:6px;justify-content:center}
+#app .apartment-modes .reset-apartment{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:3px 7px;border:1px solid #dce5df;border-radius:7px;background:transparent;font-size:11px;color:var(--muted)}
+.reset-apartment svg{width:13px;height:13px}
+.show-apartment>.map-tools{display:none!important}
+.show-apartment .apartment-credit{grid-row:3}
+#app .map-tools{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 0 5px;background:transparent}
+#app .map-tools .map-tool-group{display:flex;align-items:center;padding:2px;background:#f2f6f3;border:1px solid #e5ece7;border-radius:12px}
+#app .map-tools button,#app .map-tools .map-icon-button{display:inline-flex;align-items:center;justify-content:center;width:34px;min-width:0;height:36px;min-height:36px;padding:7px;border:0;border-radius:8px;background:transparent;font-size:12px;color:var(--ink)}
+#app .map-tools button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#app .map-tools button:hover{background:#e1ebe4}
+#app .map-tools button[data-view="top"],#app .map-tools button[data-view="reset"]{width:39px;padding:4px}
+#app .map-tools>.focus-control{border:1px solid #e5ece7;border-radius:11px;width:38px;height:40px;background:white}
+#app .map-gesture{font-size:11px;color:#849188;margin-top:2px}
+@media(max-width:360px){#app .map-tools{gap:4px}#app .map-tools button,#app .map-tools .map-icon-button{width:30px}#app .map-tools button[data-view="top"],#app .map-tools button[data-view="reset"]{width:35px}}
+
+
+/* Unified compact map actions. */
+#app .map-header-tools .map-icon-button,#app .map-view-actions button{display:inline-flex;align-items:center;justify-content:center;width:29px;min-width:29px;height:30px;min-height:30px;padding:6px;border:0;border-radius:8px;background:transparent;color:var(--ink);cursor:pointer}
+#app .map-header-tools svg,#app .map-view-actions svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.map-view-actions{display:flex;gap:0;align-items:center;margin-left:auto}
+#app .map-view-actions button[data-view="top"],#app .map-view-actions button[data-view="reset"]{width:auto;min-width:30px;padding:4px 5px;font-size:11px}
+#app .map-view-actions button:hover,#app .map-header-tools button:hover{background:var(--mint-tint)}
+#app .plan-tools{justify-content:center}
+#app .plan-tools small{margin:0;text-align:center;width:100%}
+#app [data-name="紧凑 2D/3D 切换"] p{font-size:12px!important;font-weight:400!important;line-height:20px!important}
+#app [data-name="紧凑 2D/3D 切换"]{height:28px!important;align-items:center!important}
+#app .app-heading [data-name^="小禾电量"]{display:flex!important;align-items:center;gap:5px;width:auto!important;height:26px!important;min-width:62px;color:#294b3e}
+.robot-battery-head{width:17px;height:19px;flex:none}
+#app .app-heading [data-name^="小禾电量"] .battery-shell{position:relative;display:flex;align-items:center;justify-content:center;width:31px;height:16px;padding:0;border:1.2px solid currentColor;border-radius:4px;font:9px/1 system-ui;background:transparent;isolation:isolate}
+.battery-shell::before{content:"";position:absolute;inset:2px auto 2px 2px;width:70%;max-width:calc(100% - 4px);background:#c2dccc;border-radius:1px;z-index:-1}
+.battery-shell::after{content:"";position:absolute;right:-4px;top:4px;width:2px;height:6px;background:currentColor;border-radius:0 1px 1px 0}
+#app .map-viewer:has(.map-view-actions){grid-template-rows:auto minmax(0,1fr) auto auto}
+@media(max-width:360px){.apartment-modes{gap:3px}.apartment-modes>button{padding-inline:8px}.map-view-actions{gap:0}}
+
+
+/* Give the map the available height; keep destination information secondary. */
+#app .screen-content.map-main-content{display:flex;flex-direction:column;padding-top:0!important;min-height:0;gap:0}
+#app .map-main-content [data-name="地图上方 · 移动提示"]{flex:none;flex-wrap:nowrap!important;min-height:34px;margin:0 16px 3px!important;padding:0!important;gap:5px!important}
+#app .map-main-content [data-name="地图上方 · 移动提示"]>p:first-of-type{font-size:13px!important;line-height:20px!important;font-weight:400!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important;color:var(--muted)!important}
+#app .map-main-content [data-name="地图上方 · 移动提示"]>p:nth-of-type(2){display:none!important}
+#app .map-main-content [data-name="选择目的地提示"]{width:14px!important;height:14px!important}
+#app .map-main-content [data-name="紧凑 2D/3D 切换"]{height:26px!important;width:78px!important}
+#app .map-main-content [data-name="紧凑 2D/3D 切换"]>[data-name]{width:35px!important;height:21px!important}
+#app .map-main-content .map-block:not(.map-focus){flex:1 0 300px;height:auto!important;min-height:300px;margin:0 12px 4px!important}
+#app .map-main-content .map-home-row{top:0;left:4px;right:4px;min-height:34px}
+#app .map-main-content .plan-stage{top:38px;bottom:27px}
+#app .map-main-content .map-viewer{top:36px;left:4px;right:4px;bottom:4px}
+#app .map-main-content .plan-tools{bottom:3px}
+#app .screen:has(.map-main-content) .app-heading{padding-bottom:4px}
+
 </style></head><body><div id="viewport"><svg class="symbols" aria-hidden="true"><defs>
 <symbol id="washer" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="3"/><path d="M3 7h18M6 4.5h2"/><circle cx="12" cy="14" r="4.8"/><path d="M8 14q2-2 4 0t4 0"/></symbol>
 <symbol id="done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></symbol>
@@ -3237,7 +3314,7 @@ function installRoomViewer(viewer) {
     const task=projectedTasks.find(p=>Math.hypot(p.x-x,p.y-y)<22);
     if(task){openMapTask(task.index);return;}
     const room=projectedRooms.find(p=>context.isPointInPath(p.path,x*(canvas.width/canvas.clientWidth),y*(canvas.height/canvas.clientHeight)));
-    if(room)setMapDestination(room.name);
+    if(room&&viewer.unproject){const point=viewer.unproject(x,y);setMapDestination(room.name,{space:'3d',x:point[0],y:point[1]});}
   };
   viewer.addEventListener('routechange',draw);
 
@@ -3259,6 +3336,11 @@ function installRoomViewer(viewer) {
       const depth=x*s+y*c;
       return [width/2+(x*c-y*s)*scale,height*.53+(depth*sinPitch-z*cosPitch)*scale,depth*cosPitch+z*sinPitch];
     }
+    viewer.unproject=(px,py)=>{
+      const horizontal=(px-width/2)/scale;
+      const depth=((py-height*.53)/scale+.1*cosPitch)/sinPitch;
+      return [horizontal*c+depth*s,-horizontal*s+depth*c];
+    };
     const faces=[];
     for(const b of boxes){
       const {x,y,z,w,d,h}=b;
@@ -3283,7 +3365,7 @@ function installRoomViewer(viewer) {
     projectedRooms=regions.map(([x,y,r,b,name])=>{
       const path=new Path2D();[[x,y],[r,y],[r,b],[x,b]].forEach(([u,v],i)=>path[i?'lineTo':'moveTo'](...project(u,v,.1).slice(0,2)));path.closePath();return {path,name};
     });
-    const end=destinations[settings.mapDestination];
+    const end=mapTarget('3d')||destinations[settings.mapDestination];
     if(end){
       const route=[[-.18,.24],[end[0],.24],end].map(([x,y])=>project(x,y,.12));
       context.beginPath();route.forEach(([x,y],i)=>context[i?'lineTo':'moveTo'](x,y));context.strokeStyle='#267358';context.lineWidth=3;context.setLineDash([6,4]);context.stroke();context.setLineDash([]);
@@ -3636,15 +3718,32 @@ function openMapTask(index){
   if(record && !record.done)openExecution(card,record);
   else requestDetail(card,record);
 }
-function setMapDestination(room){
+
+function mapTarget(space){
+ const point=settings.mapPoint,room=settings.mapDestination;
+ if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
+ if(point.space===space)return [point.x,point.y];
+ const bounds={
+  '客厅':{'2d':[10,29,189,278],'3d':[-4.7,-3.7,-.1,.55]},
+  '厨房':{'2d':[189,164,371,278],'3d':[0,-3.7,4.7,.55]},
+  '书房':{'2d':[10,278,120,449],'3d':[-4.7,.55,-1,3.7]},
+  '玄关':{'2d':[120,278,198,449],'3d':[-1,.55,1,3.7]},
+  '卧室':{'2d':[198,278,371,449],'3d':[1,.55,4.7,3.7]}
+ };
+ const source=bounds[room]?.[point.space],target=bounds[room]?.[space];
+ if(!source||!target)return null;
+ return [target[0]+(point.x-source[0])/(source[2]-source[0])*(target[2]-target[0]),target[1]+(point.y-source[1])/(source[3]-source[1])*(target[3]-target[1])];
+}
+
+function setMapDestination(room,point=null){
   if(settings.excluded?.includes(room)){toast('该房间已限制进入');return;}
-  settings.mapDestination=room;save();refreshMapRoute();
+  settings.mapDestination=room;settings.mapPoint=point;save();refreshMapRoute();
 }
 function refreshMapRoute(){
   for(const tip of document.querySelectorAll('[data-name="地图上方 · 移动提示"]')){
     const [title,hint]=tip.querySelectorAll('p');
     title.textContent=settings.mapDestination?'目的地 · '+settings.mapDestination:'想让小禾去哪里？';
-    hint.textContent=settings.mapDestination?'点其他房间可改线':'轻点房间规划路线';
+    hint.textContent=settings.mapDestination?'轻点地图任意位置改线':'轻点地图规划路线';
   }
   for(const view of document.querySelectorAll('.map-viewer,.plan-stage'))view.dispatchEvent(new Event('routechange'));
 }
@@ -3656,7 +3755,7 @@ function mapButton(text,label,action){
 function toggleMapFocus(block){
   const active=block.classList.toggle('map-focus');
   const button=block.querySelector('.focus-control');
-  button.textContent=active?'退出全屏':'全屏';button.setAttribute('aria-pressed',String(active));
+  button.innerHTML=mapControlIcon(active?'collapse':'expand');button.setAttribute('aria-label',active?'退出全屏':'全屏');button.title=active?'退出全屏':'全屏';button.setAttribute('aria-pressed',String(active));
 }
 // Delay a single tap long enough to distinguish it from a double tap.
 function tapMap(surface,single,double){
@@ -3696,7 +3795,7 @@ routeLayer.setAttribute('viewBox','0 0 382 480');routeLayer.classList.add('plan-
 routeLayer.innerHTML='<polyline fill="none" stroke="#267358" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 5"/><circle r="6" fill="#267358" stroke="white" stroke-width="2"/>';
 floor.append(routeLayer);
 stage.addEventListener('routechange',()=>{
-  const end=roomPoints[settings.mapDestination];routeLayer.style.display=end?'block':'none';
+  const end=mapTarget('2d')||roomPoints[settings.mapDestination];routeLayer.style.display=end?'block':'none';
   if(!end)return;
   const [x,y]=end;
   routeLayer.firstElementChild.setAttribute('points',[[162,343],...floorPaths[settings.mapDestination],end].map(p=>p.join(',')).join(' '));
@@ -3732,7 +3831,7 @@ tapMap(stage,e=>{
   const rect=floor.getBoundingClientRect(),x=(e.clientX-rect.left)*382/rect.width,y=(e.clientY-rect.top)*480/rect.height;
   if(x<10||x>371||y<29||y>449||(x>226&&y<164))return;
   const room=y<278?(x<189?'客厅':'厨房'):(x<120?'书房':x<198?'玄关':'卧室');
-  setMapDestination(room);
+  setMapDestination(room,{space:'2d',x,y});
 },()=>toggleMapFocus(floorBlock));
 for(const label of floor.querySelectorAll(':scope > p'))if(roomPoints[label.textContent.trim()]){
   label.setAttribute('role','button');label.tabIndex=0;
@@ -4465,10 +4564,70 @@ if(apartmentViewer){
   const open=conversationButton('单独打开模型',()=>window.open('https://sketchfab.com/models/6a7a5fe208344b2e8123a88923dbd5b3/embed','_blank','noopener'));
   open.className='open-apartment';credit.append(open);
   const full=conversationButton('全屏',()=>toggleMapFocus(apartmentViewer.closest('.map-block')));
-  toolbar.append(full);
+  // Fullscreen is provided by the bottom toolbar in both 3D modes.
   for(const tab of document.querySelectorAll('[data-name="Navigation item"]')){
     if(tab.textContent.trim()==='地图')clickable(tab,()=>show('137:852'));
   }
   if(current==='137:683')show('137:852',false);
 }
+
+function mapControlIcon(kind){
+ const paths={out:'<circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6"/>',in:'<circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6M10 7v6"/>',expand:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',collapse:'<path d="M3 8h5V3m8 0v5h5M8 21v-5H3m18 0h-5v5"/>'};
+ return '<svg viewBox="0 0 24 24" aria-hidden="true">'+paths[kind]+'</svg>';
+}
+for(const block of document.querySelectorAll('.map-block')){
+ const home=block.firstElementChild;
+ const name=[...home.children].find(n=>n.tagName==='P');
+ const rename=home.querySelector('[data-name="编辑地图"]');
+ const mode=home.querySelector('[data-name="紧凑 2D/3D 切换"]');
+ const destination=block.closest('.screen').querySelector('[data-name="地图上方 · 移动提示"]');
+ if(mode&&destination)destination.append(mode);
+ const row=document.createElement('div');row.className='map-home-row';
+ if(name)row.append(name);
+ if(rename){rename.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m15 4 5 5M4 16l-1 5 5-1L21 7l-5-5Z"/></svg>';rename.setAttribute('aria-label','重命名家庭');rename.title='重命名家庭';row.append(rename);}
+ home.append(row);
+ const plan=home.querySelector('.plan-tools');
+ if(plan){const controls=document.createElement('div');controls.className='map-header-tools';for(const b of plan.querySelectorAll('button'))controls.append(b);row.append(controls);}
+ for(const button of block.querySelectorAll('.plan-tools button,.map-header-tools button,.map-tools button')){
+  const label=button.getAttribute('aria-label')||'';
+  const kind=button.classList.contains('focus-control')?'expand':button.dataset.view==='out'||label.includes('缩小')?'out':button.dataset.view==='in'||label.includes('放大')?'in':null;
+  if(kind){button.innerHTML=mapControlIcon(kind);button.classList.add('map-icon-button');button.title=kind==='expand'?'全屏':kind==='out'?'缩小地图':'放大地图';button.setAttribute('aria-label',button.title);}
+ }
+}
+
+
+for(const tools of document.querySelectorAll('.map-tools')){
+ const groups=[['left','right'],['out','in'],['top','reset']];
+ for(const actions of groups){
+  const group=document.createElement('div');group.className='map-tool-group';group.setAttribute('role','group');
+  group.setAttribute('aria-label',actions[0]==='left'?'旋转地图':actions[0]==='out'?'缩放地图':'地图视角');
+  for(const action of actions){const button=tools.querySelector('[data-view="'+action+'"]');if(button)group.append(button);}
+  tools.insertBefore(group,tools.querySelector('.focus-control'));
+ }
+ for(const action of ['left','right']){
+  const button=tools.querySelector('[data-view="'+action+'"]');
+  if(button)button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+(action==='left'?'<path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/>':'<path d="M20 10a8 8 0 1 0-1 8M20 4v6h-6"/>')+'</svg>';
+ }
+}
+for(const reset of document.querySelectorAll('.reset-apartment'))reset.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span>复位</span>';
+
+
+for(const viewer of document.querySelectorAll('.map-viewer')){
+ const tools=viewer.querySelector('.map-tools'),block=viewer.closest('.map-block');
+ if(!tools)continue;
+ const primary=document.createElement('div');primary.className='map-header-tools';
+ for(const selector of ['[data-view="out"]','[data-view="in"]','.focus-control']){const button=tools.querySelector(selector);if(button)primary.append(button);}
+ block.querySelector('.map-home-row').append(primary);
+ const secondary=document.createElement('div');secondary.className='map-view-actions';secondary.setAttribute('role','group');secondary.setAttribute('aria-label','地图视角');
+ for(const selector of ['[data-view="left"]','[data-view="right"]','[data-view="top"]','[data-view="reset"]']){const button=tools.querySelector(selector);if(button)secondary.append(button);}
+ viewer.querySelector('.apartment-modes').append(secondary);tools.remove();
+ const update=()=>{const real=viewer.classList.contains('show-apartment');secondary.hidden=real;primary.hidden=real;};
+ new MutationObserver(update).observe(viewer,{attributes:true,attributeFilter:['class']});update();
+}
+for(const battery of document.querySelectorAll('[data-name^="小禾电量"]')){
+ battery.innerHTML='<svg class="robot-battery-head" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="3" y="6" width="18" height="14" rx="5" fill="currentColor"/><circle cx="8.5" cy="12" r="1.4" fill="white"/><circle cx="15.5" cy="12" r="1.4" fill="white"/><path d="M9 16h6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg><span class="battery-shell">70%</span>';
+}
+
+
+for(const block of document.querySelectorAll('.map-block'))block.closest('.screen-content').classList.add('map-main-content');
 </script></body></html>
