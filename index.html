@@ -438,7 +438,11 @@ dialog :is(input,select,textarea),dialog h2{
 .send-location{width:100%}button:disabled{opacity:.45;cursor:default}
 .screen.with-tabs [data-name="Navigation items"]{grid-template-columns:repeat(5,minmax(0,1fr))}
 .quick-task-avatar{width:42px;height:42px;min-width:0;border:2px solid white;align-self:center;justify-self:center;border-radius:50%;background:var(--mint);color:#294e40;font:600 17px system-ui;overflow:hidden;padding:0;touch-action:none;user-select:none;-webkit-touch-callout:none;cursor:pointer}
-.quick-task-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+.quick-task-avatar{display:grid;place-items:center}
+.quick-task-avatar svg{width:29px;height:29px;pointer-events:none}
+.chat-avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.direct-chat-panel .chat-input-row{grid-template-columns:minmax(0,1fr) auto}
+.voice-chat-note{display:block;margin:4px auto 0;max-width:32rem;color:var(--muted)}
 #modal .chat-input-row textarea{width:100%;min-width:0}
 .location-preview{position:relative;background:#f0f7f2;margin-top:5px;height:110px;border-radius:8px;overflow:hidden;max-width:180px}
 .location-preview img{display:block;width:100%;height:100%;object-fit:fill}
@@ -662,7 +666,14 @@ dialog :is(input,select,textarea),dialog h2{
 <symbol id="done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></symbol>
 <symbol id="map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2zM9 3v16M15 5v16"/></symbol>
 <symbol id="help" viewBox="0 0 24 24"><path d="M21 11a9 8 0 0 1-12 7.6L4 21l.9-5A9 8 0 1 1 21 11Z"/><path d="M9.5 8.8c0-3 5-3 5 0 0 1.7-2.5 1.7-2.5 3.5M12 15h.01"/></symbol>
-<symbol id="tasks" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="4" fill="currentColor"/><path d="m6 8 1.5 1.5L10 7m2 1h5m-11 7 1.5 1.5L10 14m2 1h5" stroke="white"/></symbol>
+<symbol id="tasks" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="4" fill="var(--mint-tint)" stroke="currentColor"/><path d="m6.5 8 1.4 1.4 2.4-2.6m2.5 1.4h4.5M6.5 15l1.4 1.4 2.4-2.6m2.5 1.4h4.5" fill="none" stroke="currentColor"/></symbol>
+<symbol id="quick-chat-robot" viewBox="0 0 32 32">
+  <path d="M16 9V5M5 14v6m22-6v6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="16" cy="4.7" r="1.8" fill="currentColor"/>
+  <rect x="5.5" y="9" width="21" height="17.5" rx="7" fill="currentColor"/>
+  <circle cx="12" cy="16.5" r="1.6" fill="white"/><circle cx="20" cy="16.5" r="1.6" fill="white"/>
+  <path d="M13.6 21q2.4 2.8 4.8 0" fill="none" stroke="white" stroke-width="1.45" stroke-linecap="round"/>
+</symbol>
 <symbol id="settings" viewBox="0 0 24 24"><path d="m9 3 1-1h4l1 2 3 1 2 1 1 3-1 2v2l1 2-1 3-3 1-2 1-1 2h-4l-1-2-3-1-2-1-1-3 1-2v-2L3 9l1-3 3-1z"/><circle cx="12" cy="12" r="3.5"/></symbol>
 </defs></svg><main id="app"><section class="screen" id="s91-308" data-screen="91:308"><div style="background:#f7f7fc;position:relative;width:100%;height:100%" data-node-id="91:308" data-name="设置 · iPhone 18 Pro Max / 440×956">
       <p style="word-break:break-word;position:absolute;font-family:&#x27;Noto Sans SC&#x27;,&#x27;Microsoft YaHei&#x27;,sans-serif;font-weight:700;line-height:23.511px;left:31.35px;color:#1c1c22;font-size:15.674px;top:14.55px;white-space:nowrap" data-node-id="91:309">
@@ -3647,7 +3658,9 @@ if(robotPin){
 
 const chatHistory=settings.chatHistory ||= {};
 const handoffs=settings.handoffs ||= {};
-const originalProblem=card=>card.querySelector('[data-name="Task content"] > p')?.textContent.trim()||'小禾需要你确认下一步。';
+const isDirectChat=card=>card.dataset.directChat==='true';
+const originalProblem=card=>isDirectChat(card)?'你好，我是小禾。你想聊什么？':
+  card.querySelector('[data-name="Task content"] > p')?.textContent.trim()||'小禾需要你确认下一步。';
 const sourceTitle=card=>card.querySelector('[data-name="Task heading"] p')?.textContent.trim()||'任务';
 const screenTime=time=>new Intl.DateTimeFormat('zh-CN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Shanghai'}).format(time);
 
@@ -3692,23 +3705,26 @@ function chooseHelpMethod(card,title){
 function openGuidanceChat(card,title,back){
   document.querySelector('.chat-resume')?.remove();
   const id=card.dataset.nodeId;
-  const messages=chatHistory[id] ||= [];
-  openHelpPanel('与小禾对话','<p class="chat-topic"></p><div class="chat-log" role="log" aria-label="聊天记录"></div>'+
-    '<form class="chat-composer"><label class="remember-choice"><input type="checkbox" name="remember">记住这条指导</label>'+
+  const direct=isDirectChat(card);
+  const fresh=direct&&!conversationMeta[id];
+  const messages=chatHistory[id]||[];
+  openHelpPanel(fresh?'新建聊天':'与小禾对话','<p class="chat-topic"></p><div class="chat-log" role="log" aria-label="聊天记录"></div>'+
+    '<form class="chat-composer">'+(direct?'':'<label class="remember-choice"><input type="checkbox" name="remember">记住这条指导</label>')+
     '<div class="chat-input-row"><textarea name="answer" rows="1" maxlength="200" aria-label="发给小禾的消息" placeholder="发给小禾…"></textarea>'+
-    '<button type="submit" value="submit">发送</button></div></form>',{kind:'chat-panel',back});
+    '<button type="submit" value="submit">发送</button></div></form>',{kind:direct?'chat-panel direct-chat-panel':'chat-panel',back});
   modal.querySelector('.chat-topic').textContent=title+' · 模拟对话';
   const minimize=document.createElement('button');
   minimize.type='button';minimize.textContent='−';minimize.setAttribute('aria-label','收起聊天');
   modal.querySelector('[data-close]').before(minimize);
   minimize.onclick=()=>{
-    const draft=modal.querySelector('textarea').value, remember=modal.querySelector('[name=remember]').checked;
+    const draft=modal.querySelector('textarea').value, remember=modal.querySelector('[name=remember]')?.checked;
     const resume=document.createElement('button');
     resume.type='button';resume.className='chat-resume';resume.textContent='继续与小禾对话';
     closeModalPage(()=>document.getElementById('viewport').append(resume));
     resume.onclick=()=>{
       openGuidanceChat(card,title,back);
-      modal.querySelector('textarea').value=draft;modal.querySelector('[name=remember]').checked=remember;
+      modal.querySelector('textarea').value=draft;
+      if(!direct)modal.querySelector('[name=remember]').checked=remember;
     };
   };
   const log=modal.querySelector('.chat-log');
@@ -3720,7 +3736,9 @@ function openGuidanceChat(card,title,back){
     const avatar=document.createElement('span');
     avatar.className='chat-avatar';
     if(from==='robot')avatar.innerHTML=robotHead;
-    else avatar.textContent='我';
+    else if(settings.taskAvatar){
+      const photo=document.createElement('img');photo.src=settings.taskAvatar;photo.alt='';avatar.append(photo);
+    }else avatar.textContent='我';
     avatar.setAttribute('aria-hidden','true');
     const body=document.createElement('div');
     const label=document.createElement('small');
@@ -3741,16 +3759,23 @@ function openGuidanceChat(card,title,back){
     if(!answer){input.setCustomValidity('请输入指导内容');input.reportValidity();return;}
     const time=Date.now();
     const sent={text:answer,from:'user',time};
-    const reply={text:'收到这条指导，我会参考它处理。',from:'robot',time};
+    const reply={text:direct?'收到，我记下了。':'收到这条指导，我会参考它处理。',from:'robot',time};
     messages.push(sent,reply);
-    const previous=requests[id];
-    requests[id]={...previous,answer,done:false,updated:time};
-    if(composer.elements.remember.checked){
+    chatHistory[id]=messages;
+    if(direct){
+      if(!conversationMeta[id])registerDirectChat(card,answer,time);
+      delete conversationMeta[id].draft;
+      modal.querySelector('h2').textContent='与小禾对话';
+      modal.querySelector('.chat-topic').textContent=conversationTitle(card);
+    }else requests[id]={...requests[id],answer,done:false,updated:time};
+    if(composer.elements.remember?.checked){
       settings.habits ||= {};
       settings.habits[id]={title,answer};
       composer.elements.remember.checked=false;
     }
-    save();renderRequests();renderHabits();
+    save();
+    if(direct)renderConversations();
+    else{renderRequests();renderHabits();}
     addBubble(sent.text,sent);addBubble(reply.text,reply);
     input.value='';
     log.scrollTop=log.scrollHeight;
@@ -4269,98 +4294,131 @@ for(const screen of screens){
   screen.classList.add(nav?'with-tabs':'child-page');
 }
 
-let activeVoiceTask=null;
-function updateVoiceHint(){
-  if(!activeVoiceTask)return;
-  activeVoiceTask.panel.querySelector('strong').textContent=activeVoiceTask.cancelRequested?'松开取消':activeVoiceTask.stopping?'正在识别…':'正在听你说';
+let activeVoiceChat=null;
+const voiceFailures={
+  unsupported:'当前浏览器不支持语音识别，可以输入文字。',
+  'not-allowed':'无法使用麦克风，可以输入文字。',
+  'service-not-allowed':'此页面无法使用语音服务，可以输入文字。',
+  'audio-capture':'未找到可用的麦克风，可以输入文字。',
+  network:'语音服务连接失败，可以输入文字。',
+  unavailable:'暂时无法启动语音识别，可以输入文字。'
+};
+function updateVoiceHint(state){
+  const label=state.panel.querySelector('strong');
+  const message=state.cancelRequested?'松开取消':
+    state.released?'正在整理转写…':state.ended?(state.text?'松开进入新建聊天':'松开后可输入文字'):
+      state.started?'小禾正在听…':'正在连接麦克风…';
+  if(label.textContent!==message)label.textContent=message;
 }
-function clearVoiceTask(state){
+function cancelVoiceChat(){
+  const state=activeVoiceChat;if(!state)return;
   clearTimeout(state.limit);clearTimeout(state.wait);
   state.panel.remove();
-  if(activeVoiceTask===state)activeVoiceTask=null;
+  activeVoiceChat=null;
+  if(!state.ended){
+    try{state.recognition?.abort();}catch{}
+  }
 }
-function cancelVoiceTask(){
-  const state=activeVoiceTask;if(!state)return;
-  clearVoiceTask(state);state.recognition?.abort();
+function openVoiceChat(state){
+  if(activeVoiceChat!==state)return;
+  const transcript=state.text.trim();
+  const notice=transcript?'':voiceFailures[state.error]||'没有识别到语音，可以输入文字。';
+  cancelVoiceChat();
+  openNewChat(transcript,notice);
 }
-function confirmVoiceTask(text){
-  form('确认语音任务','<label>任务内容<textarea name="task" rows="3" required maxlength="200"></textarea></label>'+executionFields,data=>{
-      const task=data.get('task').trim();
-      if(!task)return;
-      const room=rooms.find(name=>task.includes(name))||'';
-      const {mode,date,time,repeat}=Object.fromEntries(data);
-      plans.push({name:task.slice(0,40),room,mode,date,time,repeat,instructions:task});
-      save();renderPlans();toast('任务已布置');
-    });
-  setupExecutionFields();
-  modal.querySelector('[name=task]').value=text;
-  modal.querySelector('[name=task]').oninput=event=>event.target.setCustomValidity(event.target.value.trim()?'':'请输入任务内容');
-  modal.querySelector('[value=submit]').textContent='布置任务';
+function stopVoiceRecognition(state){
+  if(!state.started||state.ended||state.stopRequested)return;
+  state.stopRequested=true;
+  try{state.recognition.stop();}
+  catch{state.stopRequested=false;}
 }
-function voiceUnavailable(message){
-  openHelpPanel('语音输入', '<p class="help-context"></p><button data-type-task>文字布置任务</button>');
-  modal.querySelector('.help-context').textContent=message;
-  modal.querySelector('[data-type-task]').onclick=()=>confirmVoiceTask('');
-}
-function startVoiceTask(){
-  if(activeVoiceTask)return;
-  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!Recognition){voiceUnavailable('当前浏览器不支持语音识别。可以在支持语音的浏览器中打开此页面，或输入文字布置任务。');return;}
-  if(modal.open)modal.close();
+function startVoiceChat(){
+  if(activeVoiceChat||modal.open)return;
   const panel=document.createElement('section');
   panel.className='voice-task-panel';
   panel.setAttribute('aria-live','polite');
-  panel.innerHTML='<strong>正在连接麦克风…</strong><p>按住说话 · 松开结束 · 上滑取消</p><div class="voice-transcript"></div>';
+  panel.innerHTML='<strong>正在连接麦克风…</strong><p>松开进入新建聊天 · 上滑取消</p><div class="voice-transcript"></div>';
   document.getElementById('viewport').append(panel);
-  const recognition=new Recognition();
-  const state={panel,recognition,text:'',error:'',stopping:false,cancelRequested:false};
-  activeVoiceTask=state;
+  const state={panel,text:'',error:'',started:false,ended:false,released:false,cancelRequested:false};
+  activeVoiceChat=state;
+  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Recognition){
+    state.ended=true;state.error='unsupported';updateVoiceHint(state);
+    return;
+  }
+  try{state.recognition=new Recognition();}
+  catch{state.ended=true;state.error='unavailable';updateVoiceHint(state);return;}
+  const {recognition}=state;
   recognition.lang='zh-CN';recognition.interimResults=true;recognition.continuous=true;
   recognition.onstart=()=>{
-    if(activeVoiceTask!==state){recognition.abort();return;}
-    updateVoiceHint();
-    if(state.stopping)recognition.stop();
+    if(activeVoiceChat!==state){
+      try{recognition.abort();}catch{}
+      return;
+    }
+    state.started=true;updateVoiceHint(state);
+    if(state.released||state.limitReached)stopVoiceRecognition(state);
   };
   recognition.onresult=event=>{
-    if(activeVoiceTask!==state)return;
+    if(activeVoiceChat!==state)return;
     state.text=Array.from(event.results).map(result=>result[0].transcript).join('').slice(0,200);
     panel.querySelector('.voice-transcript').textContent=state.text;
   };
   recognition.onerror=event=>{state.error=event.error;};
   recognition.onend=()=>{
-    if(activeVoiceTask!==state)return;
-    clearVoiceTask(state);
-    if(state.text.trim()){confirmVoiceTask(state.text.trim());return;}
-    const messages={
-      'not-allowed':'麦克风权限未开启。请允许此页面使用麦克风后再按住头像说话。',
-      'service-not-allowed':'当前浏览器无法使用语音服务，请换用支持语音的浏览器。',
-      'audio-capture':'未找到可用的麦克风，请检查麦克风连接。',
-      'network':'语音服务连接失败，请检查网络后重试。',
-      'no-speech':'没有听清任务内容，请重新按住头像说话。'
-    };
-    voiceUnavailable(messages[state.error]||'没有识别到任务内容，请重新按住头像说话。');
+    if(activeVoiceChat!==state)return;
+    clearTimeout(state.limit);state.ended=true;
+    if(state.released)openVoiceChat(state);
+    else updateVoiceHint(state);
   };
-  try{recognition.start();state.limit=setTimeout(finishVoiceHold,45000);}
-  catch{clearVoiceTask(state);voiceUnavailable('暂时无法启动麦克风，请检查浏览器权限后重试。');}
+  try{
+    recognition.start();
+    state.limit=setTimeout(()=>{state.limitReached=true;stopVoiceRecognition(state);},45000);
+  }catch{state.ended=true;state.error='unavailable';updateVoiceHint(state);}
 }
-function finishVoiceHold(){
-  const state=activeVoiceTask;if(!state||state.stopping)return;
-  if(state.cancelRequested){cancelVoiceTask();toast('已取消语音输入');return;}
-  state.stopping=true;updateVoiceHint();
-  try{state.recognition.stop();}catch{cancelVoiceTask();return;}
-  state.wait=setTimeout(()=>{
-    if(activeVoiceTask!==state)return;
-    const text=state.text;cancelVoiceTask();
-    if(text.trim())confirmVoiceTask(text.trim());
-    else voiceUnavailable('语音识别暂未返回结果，请重试或输入文字。');
-  },8000);
+function finishVoiceChat(){
+  const state=activeVoiceChat;if(!state||state.released)return;
+  if(state.cancelRequested){cancelVoiceChat();toast('已取消语音输入');return;}
+  state.released=true;
+  if(state.ended){openVoiceChat(state);return;}
+  updateVoiceHint(state);
+  state.wait=setTimeout(()=>openVoiceChat(state),4000);
+  stopVoiceRecognition(state);
 }
-document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelVoiceTask();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape')cancelVoiceTask();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelVoiceChat();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')cancelVoiceChat();});
 
 // Keep the existing request IDs and replies when migrating the help list to chats.
 const conversationMeta=settings.conversations ||= {};
 const chatCards=new Map(pendingCards.map(card=>[card.dataset.nodeId,card]));
+const directChatProject='与小禾聊天';
+function directChatCard(id){
+  const card=document.createElement('div');
+  card.dataset.nodeId=id;
+  card.dataset.directChat='true';
+  return card;
+}
+for(const [id,meta] of Object.entries(conversationMeta)){
+  if(meta.direct&&!meta.deleted&&chatHistory[id]?.length)chatCards.set(id,directChatCard(id));
+}
+function registerDirectChat(card,text,time){
+  const id=card.dataset.nodeId;
+  const title=Array.from(text.replace(/\s+/g,' ')).slice(0,24).join('');
+  conversationMeta[id]={direct:true,project:directChatProject,created:time,title};
+  chatCards.set(id,card);
+}
+function openNewChat(text='',notice=''){
+  const token=crypto.randomUUID?.()||Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');
+  openGuidanceChat(directChatCard('chat-'+token),'新建聊天');
+  const input=modal.querySelector('[name=answer]');
+  input.value=text;
+  input.focus({preventScroll:true});
+  input.setSelectionRange(text.length,text.length);
+  if(notice){
+    const note=document.createElement('span');note.className='voice-chat-note';note.setAttribute('role','status');
+    note.textContent=notice;modal.querySelector('.chat-topic').append(note);
+  }
+}
+function hasReplied(id,card){return isDirectChat(card)||Boolean(requests[id]);}
 for(const card of helpScreens[1].querySelectorAll('[data-name="TaskCard"]:not([data-request-copy])')){
   if(card.dataset.nodeId){
     const copy=card.cloneNode(true);
@@ -4408,7 +4466,7 @@ function conversationRow(id,card){
   const title=document.createElement('strong');title.textContent=conversationTitle(card);
   const stamp=document.createElement('time');
   stamp.textContent=new Date(lastChatTime(id)).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'});
-  const state=document.createElement('span');state.textContent=requests[id]?'已回复':'待回复';state.className='conversation-state';
+  const state=document.createElement('span');state.textContent=hasReplied(id,card)?'已回复':'待回复';state.className='conversation-state';
   button.append(title,stamp,state);
   const row=document.createElement('div');row.className='conversation-item';
   const more=conversationButton('⋯',()=>openConversationMenu(card),'conversation-more');
@@ -4458,7 +4516,7 @@ function renderConversations(){
     const matching=[...chatCards].filter(([id,card])=>!conversationMeta[id].deleted&&!isStoredChat(id)&&
       (conversationTitle(card)+originalProblem(card)+(chatHistory[id]||[]).map(message=>message.text).join('')).includes(query))
       .sort(([a],[b])=>lastChatTime(b)-lastChatTime(a));
-    const pendingItems=matching.filter(([id])=>!requests[id]&&(!scene||conversationMeta[id].project===scene));
+    const pendingItems=matching.filter(([id,card])=>!hasReplied(id,card)&&(!scene||conversationMeta[id].project===scene));
     pending.replaceChildren(...pendingItems.map(([id,card])=>conversationRow(id,card)));
     if(!pendingItems.length){
       const empty=document.createElement('p');
@@ -4468,7 +4526,7 @@ function renderConversations(){
     let hasReplies=false;
     for(const group of groups.querySelectorAll('details')){
       const project=group.dataset.project;
-      const items=matching.filter(([id])=>requests[id]&&conversationMeta[id].project===project);
+      const items=matching.filter(([id,card])=>hasReplied(id,card)&&conversationMeta[id].project===project);
       group.hidden=!items.length;
       group.querySelector('summary').textContent=project+' · '+items.length;
       group.lastElementChild.replaceChildren(...items.map(([id,card])=>conversationRow(id,card)));
@@ -4478,7 +4536,7 @@ function renderConversations(){
     emptyReplies.hidden=hasReplies;
     emptyReplies.textContent=query?'没有匹配的已回复对话':'暂无已回复对话';
     const count=[...chatCards.keys()].filter(id=>!conversationMeta[id].deleted&&isStoredChat(id)).length;
-    panel.querySelector('.conversation-archive').textContent='归档记录 · '+count+' 条　›';
+    panel.querySelector('.archive-trigger').textContent='归档记录 · '+count+' 条　›';
     const progress=panel.querySelector('.handoff-center');
     if(progress)progress.textContent='遥操进度 · '+Object.keys(handoffs).length+' 条　›';
   }
@@ -4509,7 +4567,7 @@ for(const screen of helpScreens){
     '<div class="scene-tabs" role="tablist" aria-label="待回复任务场景"></div><div role="tabpanel" tabindex="0"></div></section>'+
     '<section class="conversation-projects"><h2>已回复</h2><p class="replies-empty" hidden></p></section>';
   const replied=panel.querySelector('.conversation-projects');
-  for(const project of projectNames){
+  for(const project of [directChatProject,...projectNames]){
     const group=document.createElement('details');
     group.className='conversation-project';
     group.dataset.project=project;
@@ -4518,7 +4576,7 @@ for(const screen of helpScreens){
   }
   setupSceneTabs(panel,screen.dataset.screen);
   panel.querySelector('input').oninput=renderConversations;
-  panel.append(conversationButton('归档记录',openChatArchive,'conversation-archive'));
+  panel.append(conversationButton('归档记录',openChatArchive,'conversation-archive archive-trigger'));
   panel.querySelector('.conversation-note').after(conversationButton('遥操进度',openHandoffCenter,'conversation-archive handoff-center'));
   content.append(panel,storage);screen.querySelector('h1').textContent='对话';
 }
@@ -4534,23 +4592,28 @@ openGuidanceChat=function(card,title,back){
   title=conversationTitle(card);
   openOldChat(card,title,back);
   const id=card.dataset.nodeId;
-  modal.querySelector('.chat-topic').textContent=(conversationMeta[id]?.project||projectFor(card))+' · '+title;
+  const direct=isDirectChat(card);
+  modal.querySelector('.chat-topic').textContent=direct?(conversationMeta[id]?.title||''):
+    (conversationMeta[id]?.project||projectFor(card))+' · '+title;
   const more=conversationButton('⋯',()=>openConversationMenu(card,back,true),'conversation-more');
-  more.setAttribute('aria-label','管理这段对话');modal.querySelector('[data-close]').before(more);
+  more.setAttribute('aria-label','管理这段对话');
+  if(!direct||conversationMeta[id])modal.querySelector('[data-close]').before(more);
   if(handoffs[id]){
     const progress=conversationButton('遥操 · '+handoffStatus(handoffs[id].status),()=>openHandoffProgress(id,()=>openGuidanceChat(card,title,back)),'chat-handoff-progress');
     modal.querySelector('.chat-topic').append(progress);
   }
-  const plus=conversationButton('＋',()=>{
-    const existing=modal.querySelector('.chat-add-menu');
-    if(existing){existing.remove();return;}
-    const menu=document.createElement('div');menu.className='chat-add-menu';
-    menu.append(conversationButton('位置',()=>openChatLocation(card,title,back)),
-      conversationButton('遥操申请',()=>openHandoff(card,title,back)));
-    modal.querySelector('.chat-composer').prepend(menu);
-  },'chat-plus');
-  plus.setAttribute('aria-label','添加位置或遥操申请');
-  modal.querySelector('.chat-input-row').append(plus);
+  if(!direct){
+    const plus=conversationButton('＋',()=>{
+      const existing=modal.querySelector('.chat-add-menu');
+      if(existing){existing.remove();return;}
+      const menu=document.createElement('div');menu.className='chat-add-menu';
+      menu.append(conversationButton('位置',()=>openChatLocation(card,title,back)),
+        conversationButton('遥操申请',()=>openHandoff(card,title,back)));
+      modal.querySelector('.chat-composer').prepend(menu);
+    },'chat-plus');
+    plus.setAttribute('aria-label','添加位置或遥操申请');
+    modal.querySelector('.chat-input-row').append(plus);
+  }
   const draft=conversationMeta[id]?.draft;
   if(draft)modal.querySelector('textarea').value=draft;
   const input=modal.querySelector('textarea');
@@ -4558,7 +4621,10 @@ openGuidanceChat=function(card,title,back){
   const form=modal.querySelector('.chat-composer'),submit=form.onsubmit;
   form.onsubmit=event=>{
     const hadText=Boolean(input.value.trim());submit(event);
-    if(hadText&&conversationMeta[id]){conversationMeta[id].draft='';save();renderConversations();}
+    if(!hadText||!conversationMeta[id])return;
+    if(direct){
+      if(!more.isConnected)modal.querySelector('[data-close]').before(more);
+    }else{conversationMeta[id].draft='';save();renderConversations();}
   };
   const log=modal.querySelector('.chat-log');
   log.querySelectorAll('.chat-row').forEach((row,index)=>{
@@ -4609,30 +4675,26 @@ function openChatLocation(card,title,back){
   };
 }
 
-function applyAvatar(){
-  for(const button of document.querySelectorAll('.quick-task-avatar')){
-    button.replaceChildren();
-    if(settings.taskAvatar){const img=document.createElement('img');img.src=settings.taskAvatar;img.alt='我的头像';button.append(img);}
-    else button.textContent='C';
-  }
-}
 function chooseAvatar(){
-  form('设置快捷头像','<label>选择一张照片<input type="file" accept="image/*" name="photo"></label><p class="help-context">头像用于底部快捷入口，按住说出任务，松开结束。</p>');
+  form('设置聊天头像','<label>选择一张照片<input type="file" accept="image/*" name="photo"></label><p class="help-context">头像会显示在你发送的消息旁。</p>');
+  const avatarForm=modal.querySelector('form');
   const picker=modal.querySelector('[name=photo]');
-  modal.querySelector('[value=submit]').disabled=true;
+  const submit=avatarForm.querySelector('[value=submit]');
+  submit.disabled=true;
   picker.onchange=()=>{
     const file=picker.files[0];if(!file)return;
     const reader=new FileReader();
     reader.onload=()=>{
       const img=new Image();
       img.onload=()=>{
+        if(!avatarForm.isConnected)return;
         const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
         const size=Math.min(img.width,img.height);
         canvas.getContext('2d').drawImage(img,(img.width-size)/2,(img.height-size)/2,size,size,0,0,128,128);
-        modal.querySelector('[value=submit]').disabled=false;
-        modal.querySelector('form').onsubmit=event=>{
+        submit.disabled=false;
+        avatarForm.onsubmit=event=>{
           if(event.submitter.value==='cancel')return;
-          settings.taskAvatar=canvas.toDataURL('image/jpeg',.85);save();applyAvatar();
+          settings.taskAvatar=canvas.toDataURL('image/jpeg',.85);save();
         };
       };
       img.onerror=()=>toast('这张照片无法读取，请重新选择');
@@ -4642,35 +4704,81 @@ function chooseAvatar(){
   };
 }
 for(const nav of document.querySelectorAll('[data-name="Navigation items"]')){
-  const avatar=conversationButton('',()=>{},'quick-task-avatar');
-  avatar.setAttribute('aria-label','我的头像，按住说话布置任务，松开结束，上滑取消');
-  avatar.title='按住说话，松开结束，上滑取消';
-  let timer,start;
-  const cancel=()=>{clearTimeout(timer);timer=null;};
-  const begin=()=>{cancel();timer=setTimeout(()=>{timer=null;startVoiceTask();},450);};
-  avatar.onpointerdown=event=>{
-    if(event.button!==0)return;
-    start=[event.clientX,event.clientY];avatar.setPointerCapture(event.pointerId);begin();
+  let press=null;
+  let blockPointerClick=false;
+  const button=conversationButton('',event=>{
+    if(!modal.open&&!activeVoiceChat&&(!blockPointerClick||event.detail===0))openNewChat();
+  },'quick-task-avatar');
+  button.innerHTML=symbol('quick-chat-robot');
+  button.setAttribute('aria-label','新建聊天，轻点打开，长按语音输入');
+  button.title='轻点新建聊天 · 长按语音输入';
+  function begin(gesture){
+    press=gesture;
+    gesture.timer=setTimeout(()=>{
+      gesture.held=true;
+      startVoiceChat();
+    },450);
+  }
+  function takePress(){
+    const gesture=press;
+    if(gesture)clearTimeout(gesture.timer);
+    press=null;
+    return gesture;
+  }
+  function cancelPress(){
+    const gesture=takePress();
+    if(!gesture)return;
+    blockPointerClick=true;
+    if(gesture.held)cancelVoiceChat();
+  }
+  button.onpointerdown=event=>{
+    if(event.button!==0||!event.isPrimary||press||activeVoiceChat)return;
+    blockPointerClick=false;
+    button.setPointerCapture(event.pointerId);
+    begin({pointerId:event.pointerId,x:event.clientX,y:event.clientY});
   };
-  avatar.onpointermove=event=>{
-    if(!start)return;
-    if(activeVoiceTask){activeVoiceTask.cancelRequested=event.clientY<start[1]-65;updateVoiceHint();}
-    else if(Math.hypot(event.clientX-start[0],event.clientY-start[1])>8)cancel();
+  button.onpointermove=event=>{
+    if(press?.pointerId!==event.pointerId)return;
+    if(press.held&&activeVoiceChat){
+      activeVoiceChat.cancelRequested=event.clientY<press.y-65;
+      updateVoiceHint(activeVoiceChat);
+    }else if(!press.held&&Math.hypot(event.clientX-press.x,event.clientY-press.y)>10){
+      clearTimeout(press.timer);
+      press.dragged=true;
+    }
   };
-  avatar.onpointerup=()=>{cancel();finishVoiceHold();start=null;};
-  avatar.onpointercancel=()=>{cancel();cancelVoiceTask();start=null;};
-  avatar.onlostpointercapture=cancel;
-  avatar.oncontextmenu=event=>event.preventDefault();
-  avatar.onkeydown=event=>{if([' ','Enter'].includes(event.key)&&!event.repeat){event.preventDefault();begin();}};
-  avatar.onkeyup=event=>{if([' ','Enter'].includes(event.key)){cancel();finishVoiceHold();}};
-  avatar.onblur=()=>{cancel();cancelVoiceTask();};
-  nav.insertBefore(avatar,nav.children[2]);
+  button.onpointerup=event=>{
+    if(press?.pointerId!==event.pointerId)return;
+    const gesture=takePress();
+    blockPointerClick=Boolean(gesture.held||gesture.dragged);
+    if(gesture.held&&activeVoiceChat){
+      activeVoiceChat.cancelRequested=event.clientY<gesture.y-65;
+      finishVoiceChat();
+    }
+  };
+  button.onpointercancel=button.onlostpointercapture=event=>{
+    if(press?.pointerId===event.pointerId)cancelPress();
+  };
+  button.oncontextmenu=event=>event.preventDefault();
+  button.onkeydown=event=>{
+    if(event.key!==' '&&event.key!=='Enter')return;
+    event.preventDefault();
+    if(!event.repeat&&!press&&!activeVoiceChat)begin({key:event.key});
+  };
+  button.onkeyup=event=>{
+    if(press?.key!==event.key)return;
+    event.preventDefault();
+    if(takePress().held)finishVoiceChat();
+    else openNewChat();
+  };
+  button.onblur=cancelPress;
+  nav.insertBefore(button,nav.children[2]);
 }
-menuItem(menu(settingsBody),'快捷头像','选择照片 ›',chooseAvatar);
-applyAvatar();renderConversations();save();
+menuItem(menu(settingsBody),'聊天头像','选择照片 ›',chooseAvatar);
+renderConversations();save();
 
 function conversationTitle(card){
-  return conversationMeta[card.dataset.nodeId]?.title||sourceTitle(card);
+  return conversationMeta[card.dataset.nodeId]?.title||(isDirectChat(card)?'新建聊天':sourceTitle(card));
 }
 function openConversationMenu(card,back,fromChat=false){
   const title=conversationTitle(card);
