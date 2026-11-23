@@ -661,6 +661,167 @@ dialog :is(input,select,textarea),dialog h2{
 .scene-tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--mint);background:var(--mint)}
 .pending-conversations [role="tabpanel"]>p{margin:0;padding:14px;border-top:1px solid var(--line);font-size:var(--caption);color:var(--muted)}
 
+
+.chat-resume{width:44px;height:44px;padding:0;display:grid;place-items:center;bottom:calc(82px + env(safe-area-inset-bottom));right:12px;border-radius:50%;border:1px solid #b9d5c7;box-shadow:0 2px 8px #244c3a18;background:#e7f2ec;color:#294e40}
+.chat-resume svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.resume-dot{position:absolute;right:2px;top:2px;width:7px;height:7px;border-radius:50%;background:#518b70;border:1.5px solid white}
+
+.chat-history-shell{position:relative;min-height:0;overflow:hidden}
+.chat-panel .chat-history-shell .chat-log{height:100%;padding-right:38px}
+.chat-history-rail{position:absolute;right:2px;top:14px;bottom:14px;display:flex;flex-direction:column;justify-content:center;gap:1px;width:26px;overflow:hidden;background:none;border:0;padding:0}
+.chat-history-rail button{flex:0 1 18px;display:grid;place-items:center;width:26px;min-height:10px!important;margin:0!important;padding:0!important;border:0;background:transparent!important}
+.chat-history-rail i{height:2px;width:8px;background:#cbd5cf;border-radius:2px}
+.chat-history-rail [aria-current=true] i{width:12px;background:#48735e}
+.chat-history-rail button:hover i,.chat-history-rail button:focus-visible i{background:#294e40}
+#modal .chat-input-row:has(.chat-microphone){grid-template-columns:auto minmax(0,1fr) auto auto}
+#modal .direct-chat-panel .chat-input-row:has(.chat-microphone){grid-template-columns:auto minmax(0,1fr) auto}
+#modal .chat-microphone{width:34px;min-width:34px;min-height:44px;padding:7px;background:var(--mint-tint);margin:0;color:var(--accent)}
+.chat-microphone svg{width:19px;height:23px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round}
+#modal .chat-microphone[aria-pressed=true]{background:var(--mint);color:#a63232}
+.speech-status{font-size:12px!important;line-height:1.5;margin:5px 0 8px;color:var(--muted)}
+#modal .chat-input-row textarea{font-size:16px}
+.task-subpage>header{background:white;padding:8px 16px;border-color:var(--line)}
+.task-subpage .task-section{background:#f5f8f6}
+.task-subpage .tiles-back{padding:0 8px;min-height:44px;font-size:15px;font-weight:400;border-radius:10px}
+.task-section:has(.refined-task-detail)>h2{display:none}
+#app .screen .refined-task-detail{display:grid!important;gap:14px!important;width:100%!important;padding:18px!important;margin:0;background:white!important;border:1px solid var(--line);border-radius:16px!important;overflow:visible!important}
+.refined-task-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.refined-task-heading h3{font-size:16px;line-height:1.5;margin:0}
+#app .screen .refined-task-heading [data-name="执行中"]{width:auto!important;min-height:28px;padding:4px 9px!important;background:var(--mint-tint)!important;border-radius:8px}
+#app .screen .refined-task-heading [data-name="执行中"] p{color:var(--accent)!important;font-size:12px!important}
+.refined-task-location,.refined-task-timing{color:var(--muted);font-size:12px;line-height:1.5}
+.refined-task-status{font-size:14px;line-height:1.5}
+.refined-task-progress{display:flex;align-items:center;gap:12px;color:var(--accent);font-size:13px}
+.refined-task-progress progress{width:100%;min-width:0;flex:1;height:6px;border:0;appearance:none;background:#e3ece6;border-radius:6px;overflow:hidden}
+.refined-task-progress progress::-webkit-progress-bar{background:#e3ece6}
+.refined-task-progress progress::-webkit-progress-value{background:#609b80;border-radius:6px}
+.refined-task-progress progress::-moz-progress-bar{background:#609b80}
+.refined-task-timing{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.refined-task-actions{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+#app .screen .refined-task-actions>[role=button]{position:relative!important;inset:auto!important;flex:1 1 100px;width:auto!important;min-height:44px;padding:11px!important;background:var(--mint)!important;border-radius:10px!important;justify-content:center!important}
+#app .screen .refined-task-actions>[data-name="暂停"]{background:#eff4f1!important}
+#app .screen .refined-task-actions p{font-size:13px!important;color:var(--ink)!important}
+
+/* Every route and top-layer dialog shares the same phone bounds. */
+html,body{width:100%;height:100%;overflow:hidden}
+body{display:grid;place-items:center;place-content:normal;background:#e7ede9}
+#viewport{position:relative!important;width:min(390px,100vw)!important;height:min(844px,100dvh)!important;margin:auto!important;overflow:hidden;transform:translateZ(0)!important}
+@media(max-width:600px){#viewport{width:min(390px,100vw)!important;height:min(844px,100dvh)!important}}
+#modal[open],#modal[open]:has(.chat-panel){
+ position:fixed;left:var(--phone-left);top:var(--phone-top);right:auto;bottom:auto;margin:0;
+ width:var(--phone-width);height:var(--phone-height);max-width:var(--phone-width);max-height:var(--phone-height);
+ box-sizing:border-box;border-radius:0;border:0;overflow:auto
+}
+#modal[open]:has(.chat-panel){overflow:hidden}
+#modal[open]::backdrop{background:transparent}
+#modal[open].map-task-popup{
+ left:calc(var(--phone-left) + 16px);top:calc(var(--phone-top) + var(--phone-height) * .5);
+ width:calc(var(--phone-width) - 32px);height:auto;
+ max-height:calc(var(--phone-height) - 80px);max-width:calc(var(--phone-width) - 32px);
+ transform:translateY(-50%);padding:18px;border:1px solid var(--line);border-radius:20px;
+ box-shadow:0 12px 40px #173a2c30;background:white;overflow:auto
+}
+.phone-dialog-dimmer{position:absolute;inset:0;background:#19382c40;z-index:20;pointer-events:none}
+.map-task-popup .help-panel header{align-items:center}
+.map-task-popup .help-panel h2{font-size:16px;margin:0}
+.map-task-popup .help-context{margin:14px 0;line-height:1.6}
+#notice{max-width:min(358px,calc(100vw - 32px))}
+
+/* Compact headers use the same rhythm on primary and secondary pages. */
+#app .screen .status{height:max(34px,env(safe-area-inset-top));font-size:13px}
+#app .screen .app-heading{min-height:46px;padding:3px 16px 7px;gap:8px}
+#app .screen .app-heading h1{font-size:22px;line-height:1.3}
+#app .screen .app-heading.secondary-heading h1{font-size:15px}
+#app .screen .app-heading>[role=button]{min-height:38px;min-width:38px}
+#app .screen .screen-content{padding-top:10px!important}
+#app .screen .conversation-home{gap:14px}
+#app .screen .conversation-note{margin:0}
+#modal .chat-panel>header{min-height:46px;padding:4px 10px;border-bottom:1px solid var(--line)}
+#modal .chat-panel>header button{min-height:36px;width:36px}
+#modal .chat-topic{padding:5px 12px;font-size:12px;line-height:1.4}
+.task-subpage>header{padding:3px 12px}
+.task-subpage>header .tiles-back{min-height:42px}
+.conversation-popover{position:fixed;z-index:1000;box-sizing:border-box;background:white;border:1px solid var(--line);box-shadow:0 8px 32px #173e3126;border-radius:14px;padding:6px;max-height:min(380px,70dvh);overflow:auto}
+.conversation-popover>button{display:block;min-height:44px;width:100%;border:0;border-radius:8px;background:white;color:var(--ink);text-align:left;font-size:14px;padding:10px 12px;cursor:pointer;margin:0}
+.conversation-popover>button:hover{background:var(--mint-tint)}
+.conversation-popover .danger-action{color:#a43d3d!important;background:#fff5f3!important}
+.conversation-popover label{font-size:12px;padding:7px;display:block}
+.conversation-popover input,.conversation-popover textarea{box-sizing:border-box;width:100%;font-family:inherit;font-size:16px;line-height:1.5;margin:7px 0 0;padding:7px;border:1px solid var(--line);border-radius:8px}
+.conversation-popover p{font-size:14px;margin:8px}
+.conversation-popover small{display:block;margin:8px;font-size:12px;line-height:1.5;color:var(--muted)}
+.popover-actions{display:flex;justify-content:flex-end;gap:8px;padding:6px}
+.popover-actions button{border:0;background:var(--mint-tint);color:var(--accent);border-radius:8px;padding:9px 12px;min-height:40px;font-size:13px;cursor:pointer}
+.history-message-preview{position:absolute;right:32px;z-index:3;width:min(260px,calc(100% - 48px));padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:white;box-shadow:0 6px 22px #173e3126;pointer-events:none;box-sizing:border-box}
+.history-message-preview small{font-size:11px;color:var(--muted);line-height:1.5}
+.history-message-preview p{font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0;max-height:130px;overflow:auto}
+.chat-history-rail{overflow-y:auto;scrollbar-width:none;justify-content:safe center}
+.chat-history-rail button{min-height:12px!important;flex:0 1 18px}
+
+/* Shared spacing and type for the phone demo. */
+:root{--page-title:20px;--body:14px;--caption:12px;--body-leading:1.5;--caption-leading:1.5;--ui-section:15px;--ui-space-xs:4px;--ui-space-sm:8px;--ui-space-md:12px;--ui-space-lg:16px;--ui-radius:14px}
+body,button,input,select,textarea{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:0}
+#app .screen .app-heading{padding:4px 16px 8px;min-height:48px;gap:8px;align-items:center}
+#app .screen .app-heading h1{font-size:var(--page-title);line-height:1.4;font-weight:500!important}
+#app .screen .app-heading.secondary-heading h1{font-size:var(--ui-section)}
+#app .screen .screen-content{padding-top:12px!important}
+#app .screen .screen-content>.page-body{gap:16px!important;padding-bottom:24px}
+#app .screen :is(h2,h3){font-size:var(--ui-section);line-height:1.5;font-weight:500!important;margin:0}
+#app .screen :is(.conversation-home,.conversation-projects){gap:16px}
+#app .screen .conversation-home{padding:0 16px 24px}
+#app .screen .conversation-project{border-radius:var(--ui-radius)}
+#app .screen :is(.recent-conversations,.pending-conversations)>h2{padding:12px 16px 8px}
+#app .screen .conversation-projects>h2{margin:0}
+#app .screen .conversation-project summary{font-size:var(--body);line-height:1.5;padding:12px 16px;font-weight:500!important}
+#app .screen .conversation-item>button:first-child{min-height:72px;padding:12px 0 12px 16px;gap:4px 12px}
+#app .screen :is(.conversation-item strong,.task-card-heading strong,.extra-card button,.household-scenes button){font-size:var(--body);line-height:1.5}
+#app .screen :is(.conversation-item time,.conversation-state,.task-card-description,.task-card-progress small,.completed-entry small,.extra-card small,.conversation-note){font-size:var(--caption);line-height:1.5}
+#app .screen .conversation-archive{font-size:var(--body);padding:12px 16px;min-height:48px;border-radius:var(--ui-radius)}
+#app .screen .scene-tabs{gap:8px;padding:0 12px 12px}
+#app .screen .scene-tabs button{padding:6px 12px;min-height:36px;font-size:var(--caption)}
+#app .screen .task-tiles{gap:12px}
+#app .screen .task-tile{min-height:108px;padding:14px 16px;gap:8px;border-radius:var(--ui-radius)}
+#app .screen .task-card-heading{gap:12px}
+#app .screen .task-card-state{font-size:var(--caption);line-height:1.5;padding:2px 8px}
+#app .screen .task-card-description{overflow-wrap:anywhere}
+#app .screen .task-card-progress{gap:12px}
+#app .screen :is(.completed-entry,.extra-card){border-radius:var(--ui-radius)}
+#app .screen .completed-entry{padding:12px 16px;min-height:48px}
+#app .screen .extra-card{padding:4px 16px}
+#app .screen .extra-card button{min-height:48px;gap:12px;padding-block:10px}
+#app .screen .task-search{min-height:44px;padding:0 12px;gap:8px}
+#app .screen .task-search input[type=search]{font-size:16px;line-height:1.5}
+#app .screen .household-scenes{margin-top:8px}
+#app .screen .household-scenes>p{font-size:var(--caption);line-height:1.5;margin-top:8px}
+#app .screen .household-scenes .group-disclosure{margin-top:12px}
+.task-subpage .task-section{padding:16px}
+.task-subpage .task-section>h2{margin-bottom:12px!important}
+#modal{font-size:var(--body);line-height:1.5}
+#modal .help-panel header{align-items:center;gap:8px}
+#modal :is(h2,.help-panel h2){font-size:var(--ui-section);line-height:1.5;font-weight:500!important}
+#modal .help-panel>header h2{margin:0}
+#modal .chat-panel>header{min-height:48px;padding:6px 12px;gap:8px}
+#modal .chat-topic{font-size:var(--caption);line-height:1.5;padding:8px 16px}
+#modal .chat-log{padding:12px 16px 20px}
+#modal .chat-history-shell .chat-log{padding-right:38px}
+#modal .chat-row{gap:8px;margin-bottom:16px}
+#modal .chat-row p{font-size:var(--body);line-height:1.6;padding:10px 12px}
+#modal .chat-row small{font-size:var(--caption);line-height:1.5}
+#modal .chat-composer{padding:12px 16px max(12px,env(safe-area-inset-bottom));gap:8px}
+#modal .chat-input-row{gap:8px}
+#modal .chat-input-row textarea{font-size:16px;line-height:1.5;padding:10px 12px;margin:0}
+#modal .chat-input-row :is(button,textarea){min-height:44px}
+#modal .remember-choice{font-size:var(--caption);line-height:1.5;margin:0 0 8px}
+#modal .help-context{font-size:var(--body);line-height:1.6;margin:12px 0 16px}
+#modal .help-choices{gap:12px}
+#modal .help-choices button{padding:12px 16px;gap:4px;border-radius:12px}
+#modal .help-choices button strong{font-size:var(--body)}
+#modal .help-choices small{font-size:var(--caption);line-height:1.5}
+#modal>form>h2{margin:0 0 16px}
+#modal>form label{font-size:var(--body);line-height:1.5}
+#modal>form :is(input:not([type=checkbox]),select,textarea){font-size:16px;line-height:1.5;padding:10px 12px;margin:8px 0 16px;min-height:44px}
+#modal>form>button{font-size:var(--body);min-height:44px;padding:10px 16px}
+.conversation-popover>button,.popover-actions button{font-size:var(--body);line-height:1.5}
+
 </style></head><body><div id="viewport"><svg class="symbols" aria-hidden="true"><defs>
 <symbol id="washer" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="3"/><path d="M3 7h18M6 4.5h2"/><circle cx="12" cy="14" r="4.8"/><path d="M8 14q2-2 4 0t4 0"/></symbol>
 <symbol id="done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></symbol>
@@ -2937,8 +3098,9 @@ function slidePage(page, out=false, done=()=>{}){
     done();
     return;
   }
-  const frames=[{transform:'translateX(100%)'},{transform:'none'}];
-  if(page===modal&&!modal.querySelector('.chat-panel')){
+  const mapPopup=page===modal&&modal.classList.contains('map-task-popup');
+  const frames=mapPopup?[{opacity:0},{opacity:1}]:[{transform:'translateX(100%)'},{transform:'none'}];
+  if(page===modal&&!modal.querySelector('.chat-panel')&&!mapPopup){
     frames[0].clipPath='inset(0 100% 0 0)';
     frames[1].clipPath='inset(0)';
   }
@@ -2954,6 +3116,8 @@ function slidePage(page, out=false, done=()=>{}){
   },()=>{});
 }
 function prepareModal(){
+  modal.classList.remove('map-task-popup');
+  document.querySelector('.phone-dialog-dimmer')?.setAttribute('hidden','');
   stopPageSlide(modal);
   modal.inert=false;
   if(modal.open)modal.close();
@@ -3213,7 +3377,7 @@ const planCard = menu(taskBody.querySelector('[data-name="任务计划"]') || ta
 planCard.classList.add('task-plan-list');
 function renderPlans() {
   planCard.replaceChildren();
-  for (const [index,plan] of plans.entries()) {
+  for (const [index,plan] of [...plans.entries()].sort((a,b)=>(b[1].updated||b[1].created||0)-(a[1].updated||a[1].created||0))) {
     const mode=planMode(plan);
     const timing=mode==='recurring'?[plan.repeat,plan.time]:mode==='scheduled'?[plan.date,plan.time]:[];
     const detail=menuItem(planCard,plan.name,[plan.room,...timing].filter(Boolean).join(' · '),()=>editPlan(index));
@@ -3239,7 +3403,7 @@ function editPlan(index, template) {
     data => {
       const plan = Object.fromEntries(data);
       if (existing) plans[index] = plan; else plans.push(plan);
-      save();renderPlans();toast('任务计划已保存');
+      linkPlanConversation(plan,existing);save();renderPlans();renderConversations();toast('任务计划已保存，并同步到对话');
     });
   const defaults = existing || template;
   if (defaults) {
@@ -3719,7 +3883,10 @@ function openGuidanceChat(card,title,back){
   minimize.onclick=()=>{
     const draft=modal.querySelector('textarea').value, remember=modal.querySelector('[name=remember]')?.checked;
     const resume=document.createElement('button');
-    resume.type='button';resume.className='chat-resume';resume.textContent='继续与小禾对话';
+    resume.type='button';resume.className='chat-resume';
+    resume.setAttribute('aria-label','继续与小禾对话');
+    resume.title='继续对话';
+    resume.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 7 0 0 1-8 7H8l-5 3 1.5-6A7 7 0 0 1 4 11a8 7 0 0 1 16 0Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></svg><span class="resume-dot" aria-hidden="true"></span>';
     closeModalPage(()=>document.getElementById('viewport').append(resume));
     resume.onclick=()=>{
       openGuidanceChat(card,title,back);
@@ -3759,7 +3926,10 @@ function openGuidanceChat(card,title,back){
     if(!answer){input.setCustomValidity('请输入指导内容');input.reportValidity();return;}
     const time=Date.now();
     const sent={text:answer,from:'user',time};
-    const reply={text:direct?'收到，我记下了。':'收到这条指导，我会参考它处理。',from:'robot',time};
+    const response=demoHouseholdReply(card,answer,messages);
+    const linkedBeforeReply=chatLinkedPlan(card);
+    if(linkedBeforeReply&&!response.task&&!response.update&&!/进度|做到哪|怎么样了|还要多久|完成了吗|开始了吗|谢谢|你好|怎么|如何|[？?]/.test(answer))response.update={instructions:[linkedBeforeReply.instructions,answer].filter(Boolean).join('；')};
+    const reply={text:response.text,from:'robot',time};
     messages.push(sent,reply);
     chatHistory[id]=messages;
     if(direct){
@@ -3768,6 +3938,8 @@ function openGuidanceChat(card,title,back){
       modal.querySelector('h2').textContent='与小禾对话';
       modal.querySelector('.chat-topic').textContent=conversationTitle(card);
     }else requests[id]={...requests[id],answer,done:false,updated:time};
+    if(response.task)linkChatTask(card,response.task,answer,time);
+    if(response.update)updateChatTask(card,response.update);
     if(composer.elements.remember?.checked){
       settings.habits ||= {};
       settings.habits[id]={title,answer};
@@ -3938,6 +4110,9 @@ function openMapTask(index){
   const card=pendingCards[index], record=requests[card.dataset.nodeId];
   if(record && !record.done)openExecution(card,record);
   else requestDetail(card,record);
+  stopPageSlide(modal);
+  modal.classList.add('map-task-popup');
+  document.querySelector('.phone-dialog-dimmer')?.removeAttribute('hidden');
 }
 
 function mapTarget(space){
@@ -4192,7 +4367,7 @@ function taskOverview(){
     panel.scrollTop=0;
     subpage.hidden=false;
     taskRoot.inert=true;
-    back.focus({preventScroll:true});
+    if(trigger?.matches(':focus-visible'))back.focus({preventScroll:true});
     slidePage(subpage);
   }
   function closeSection(){
@@ -4222,7 +4397,7 @@ function taskOverview(){
       {state:'未开始',value:0,label:'0%',detail:'待完成 '+(plan.querySelectorAll('[data-name="任务 / 计划条目"]').length+plans.length)+' 项计划'}
     ];
     states.forEach((item,index)=>{
-      const tile=tiles.children[index];
+      const tile=tiles.querySelectorAll(':scope > .task-tile:not(.linked-task-tile)')[index];
       tile.querySelector('.task-card-state').textContent=item.state;
       tile.querySelector('.task-card-description').textContent=item.detail;
       tile.querySelector('progress').value=item.value;
@@ -4234,7 +4409,7 @@ function taskOverview(){
   input.oninput=()=>{
     const term=input.value.trim().toLowerCase();
     destinations.forEach(([title,subtitle,node],index)=>{
-      tiles.children[index].hidden=!(title+subtitle+node.textContent).toLowerCase().includes(term);
+      tiles.querySelectorAll(':scope > .task-tile:not(.linked-task-tile)')[index].hidden=!(title+subtitle+node.textContent).toLowerCase().includes(term);
     });
     const rows=[...history.querySelectorAll('li')];
     for(const row of rows)row.hidden=!row.textContent.toLowerCase().includes(term);
@@ -4296,11 +4471,11 @@ for(const screen of screens){
 
 let activeVoiceChat=null;
 const voiceFailures={
-  unsupported:'当前浏览器不支持语音识别，可以输入文字。',
-  'not-allowed':'无法使用麦克风，可以输入文字。',
+  unsupported:'请在 iPhone Safari 中通过 HTTPS 打开页面，并开启系统听写。',
+  'not-allowed':'请在 Safari 网站设置中允许麦克风，并检查系统的 Siri 与听写权限。',
   'service-not-allowed':'此页面无法使用语音服务，可以输入文字。',
   'audio-capture':'未找到可用的麦克风，可以输入文字。',
-  network:'语音服务连接失败，可以输入文字。',
+  network:'语音识别服务未连接，请检查网络后点击输入框旁的麦克风重试。',
   unavailable:'暂时无法启动语音识别，可以输入文字。'
 };
 function updateVoiceHint(state){
@@ -4322,7 +4497,7 @@ function cancelVoiceChat(){
 function openVoiceChat(state){
   if(activeVoiceChat!==state)return;
   const transcript=state.text.trim();
-  const notice=transcript?'':voiceFailures[state.error]||'没有识别到语音，可以输入文字。';
+  const notice=transcript?'':voiceFailures[state.error]||'没有听清。首次授权后，请点击输入框旁的麦克风重新开始说话。';
   cancelVoiceChat();
   openNewChat(transcript,notice);
 }
@@ -4356,7 +4531,9 @@ function startVoiceChat(){
       return;
     }
     state.started=true;updateVoiceHint(state);
-    if(state.released||state.limitReached)stopVoiceRecognition(state);
+    if(state.released||state.limitReached){
+      clearTimeout(state.wait);state.wait=setTimeout(()=>openVoiceChat(state),10000);stopVoiceRecognition(state);
+    }
   };
   recognition.onresult=event=>{
     if(activeVoiceChat!==state)return;
@@ -4381,7 +4558,7 @@ function finishVoiceChat(){
   state.released=true;
   if(state.ended){openVoiceChat(state);return;}
   updateVoiceHint(state);
-  state.wait=setTimeout(()=>openVoiceChat(state),4000);
+  state.wait=setTimeout(()=>openVoiceChat(state),state.started?10000:60000);
   stopVoiceRecognition(state);
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelVoiceChat();});
@@ -4516,6 +4693,11 @@ function renderConversations(){
     const matching=[...chatCards].filter(([id,card])=>!conversationMeta[id].deleted&&!isStoredChat(id)&&
       (conversationTitle(card)+originalProblem(card)+(chatHistory[id]||[]).map(message=>message.text).join('')).includes(query))
       .sort(([a],[b])=>lastChatTime(b)-lastChatTime(a));
+    let recent=panel.querySelector('.recent-conversations');
+    if(!recent){recent=document.createElement('section');recent.className='conversation-project recent-conversations';panel.querySelector('.pending-conversations').before(recent);}
+    const recentItems=matching.filter(([id,card])=>hasReplied(id,card)).slice(0,5);
+    recent.replaceChildren();const recentHeading=document.createElement('h2');recentHeading.textContent='最近对话';recent.append(recentHeading,...recentItems.map(([id,card])=>conversationRow(id,card)));recent.hidden=!recentItems.length;
+    const recentIds=new Set(recentItems.map(([id])=>id));
     const pendingItems=matching.filter(([id,card])=>!hasReplied(id,card)&&(!scene||conversationMeta[id].project===scene));
     pending.replaceChildren(...pendingItems.map(([id,card])=>conversationRow(id,card)));
     if(!pendingItems.length){
@@ -4526,12 +4708,16 @@ function renderConversations(){
     let hasReplies=false;
     for(const group of groups.querySelectorAll('details')){
       const project=group.dataset.project;
-      const items=matching.filter(([id,card])=>hasReplied(id,card)&&conversationMeta[id].project===project);
+      const items=matching.filter(([id,card])=>hasReplied(id,card)&&!recentIds.has(id)&&conversationMeta[id].project===project);
       group.hidden=!items.length;
       group.querySelector('summary').textContent=project+' · '+items.length;
       group.lastElementChild.replaceChildren(...items.map(([id,card])=>conversationRow(id,card)));
       hasReplies ||= Boolean(items.length);
     }
+    [...groups.querySelectorAll('details')].sort((a,b)=>{
+      const latest=group=>Math.max(0,...matching.filter(([id])=>conversationMeta[id].project===group.dataset.project).map(([id])=>lastChatTime(id)));
+      return latest(b)-latest(a);
+    }).forEach(group=>groups.append(group));
     const emptyReplies=groups.querySelector('.replies-empty');
     emptyReplies.hidden=hasReplies;
     emptyReplies.textContent=query?'没有匹配的已回复对话':'暂无已回复对话';
@@ -5024,4 +5210,450 @@ for(const battery of document.querySelectorAll('[data-name^="小禾电量"]')){
 
 
 for(const block of document.querySelectorAll('.map-block'))block.closest('.screen-content').classList.add('map-main-content');
-</script></body></html>
+</script><script>let inlineSpeech=null;
+function installChatSpeech(panel){
+  const composer=panel.querySelector('.chat-composer'),input=composer.querySelector('textarea');
+  const status=document.createElement('p');status.className='speech-status';status.setAttribute('role','status');status.hidden=true;
+  const mic=conversationButton('',()=>{
+    if(inlineSpeech?.input===input){inlineSpeech.recognition.stop();return;}
+    const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+    status.hidden=false;
+    if(!window.isSecureContext){status.textContent='请通过 HTTPS 地址在 Safari 打开，才能使用麦克风。';return;}
+    if(!Recognition){status.textContent='此浏览器没有语音识别接口。请用 Safari 打开，或使用键盘的听写按钮。';return;}
+    inlineSpeech?.recognition.abort();
+    const recognition=new Recognition();
+    const state={recognition,input,received:false};
+    inlineSpeech=state;
+    const prefix=input.value.trim();
+    recognition.lang='zh-CN';recognition.interimResults=true;recognition.continuous=false;
+    mic.setAttribute('aria-pressed','true');mic.setAttribute('aria-label','结束语音转写');
+    status.textContent='请允许麦克风使用权限，然后开始说话。';
+    function finish(){
+      clearTimeout(state.limit);
+      mic.setAttribute('aria-pressed','false');mic.setAttribute('aria-label','开始语音转写');
+      if(inlineSpeech===state)inlineSpeech=null;
+    }
+    recognition.onstart=()=>{
+      if(inlineSpeech!==state){recognition.abort();return;}
+      status.textContent='正在听… 说完会自动结束，也可再点麦克风停止。';
+      state.limit=setTimeout(()=>recognition.stop(),60000);
+    };
+    recognition.onresult=event=>{
+      if(inlineSpeech!==state)return;
+      const words=Array.from(event.results).map(result=>result[0].transcript).join('').trim();
+      if(!words)return;
+      state.received=true;input.value=[prefix,words].filter(Boolean).join('，').slice(0,200);
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      status.textContent='正在转写…';
+    };
+    recognition.onerror=event=>{
+      state.failed=true;
+      status.textContent=voiceFailures[event.error]||'语音识别失败，请重新点击麦克风。';
+      finish();
+    };
+    recognition.onend=()=>{
+      if(inlineSpeech!==state&&!state.failed)return;
+      finish();
+      if(!state.failed)status.textContent=state.received?'转写完成，可修改后发送。':'没有识别到声音，请重新点击麦克风。';
+    };
+    try{recognition.start();}
+    catch{finish();status.textContent='麦克风未能启动，请检查 Safari 网站麦克风权限后重试。';}
+  },'chat-microphone');
+  mic.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg>';
+  mic.setAttribute('aria-label','开始语音转写');mic.setAttribute('aria-pressed','false');
+  composer.querySelector('.chat-input-row').prepend(mic);composer.prepend(status);
+  const cleanup=()=>{
+    if(modal.open&&modal.contains(panel))return;
+    if(inlineSpeech?.input===input){inlineSpeech.recognition.abort();inlineSpeech=null;}
+    modal.removeEventListener('close',cleanup);
+  };
+  modal.addEventListener('close',cleanup);
+}
+function installChatRail(panel){
+  const log=panel.querySelector('.chat-log');
+  const shell=document.createElement('div');shell.className='chat-history-shell';
+  log.before(shell);shell.append(log);
+  const rail=document.createElement('nav');rail.className='chat-history-rail';rail.setAttribute('aria-label','用户消息快速预览');
+  const preview=document.createElement('div');preview.className='history-message-preview';preview.hidden=true;preview.setAttribute('role','status');
+  shell.append(rail,preview);
+  let targets=[],selected=null;
+  function hidePreview(){selected=null;preview.hidden=true;}
+  function updateActive(){
+    const top=log.getBoundingClientRect().top;
+    let best=0,distance=Infinity;
+    targets.forEach((row,index)=>{const d=Math.abs(row.getBoundingClientRect().top-top-12);if(d<distance){distance=d;best=index;}});
+    [...rail.children].forEach((button,index)=>button.setAttribute('aria-current',String(index===best)));
+  }
+  function refresh(){
+    const rows=[...log.querySelectorAll('.chat-row.from-user')];
+    targets=rows;hidePreview();rail.replaceChildren();
+    targets.forEach((row,index)=>{
+      const snippet=row.querySelector('p')?.textContent||'消息';
+      const button=conversationButton('',()=>{
+        if(selected===row){
+          log.scrollTo({top:log.scrollTop+row.getBoundingClientRect().top-log.getBoundingClientRect().top-12,behavior:'instant'});
+          hidePreview();return;
+        }
+        selected=row;preview.replaceChildren();
+        const label=document.createElement('small');label.textContent='你的第 '+(index+1)+' 条消息';
+        const content=document.createElement('p');content.textContent=snippet;
+        const hint=document.createElement('small');hint.textContent='再次点击同一刻度，跳转到这条消息';
+        preview.append(label,content,hint);preview.hidden=false;
+        const rect=button.getBoundingClientRect(),bounds=shell.getBoundingClientRect();
+        preview.style.top=Math.max(8,Math.min(rect.top-bounds.top, shell.clientHeight-preview.offsetHeight-8))+'px';
+      });
+      button.setAttribute('aria-label','预览你的第 '+(index+1)+' 条消息：'+snippet);button.innerHTML='<i></i>';
+      rail.append(button);
+    });
+    updateActive();
+  }
+  const observer=new MutationObserver(refresh);observer.observe(log,{childList:true});
+  log.addEventListener('scroll',updateActive,{passive:true});
+  log.addEventListener('pointerdown',hidePreview);
+  panel.addEventListener('keydown',event=>{if(event.key==='Escape'&&!preview.hidden){event.preventDefault();event.stopPropagation();hidePreview();}});
+  refresh();
+  const cleanup=()=>{if(modal.open&&modal.contains(panel))return;observer.disconnect();modal.removeEventListener('close',cleanup);};
+  modal.addEventListener('close',cleanup);
+}
+const openChatBeforeRefinements=openGuidanceChat;
+openGuidanceChat=function(...args){
+  openChatBeforeRefinements(...args);
+  const panel=modal.querySelector('.chat-panel');if(!panel)return;
+  installChatRail(panel);installChatSpeech(panel);
+};
+
+// Keep the original action nodes and handlers while reflowing the task detail.
+const cupTask=document.querySelector('[data-name="杯子收纳 · 执行中"]');
+if(cupTask){
+  const view=cupTask.querySelector('[data-name="查看机器人视角"]');
+  const pause=cupTask.querySelector('[data-name="暂停"]');
+  const badge=cupTask.querySelector('[data-name="执行中"]');
+  const paused=()=>Boolean(settings.paused);
+  cupTask.replaceChildren();
+  cupTask.classList.add('refined-task-detail');
+  const header=document.createElement('div');header.className='refined-task-heading';
+  const title=document.createElement('h3');title.textContent='杯子收纳';header.append(title,badge);
+  const description=document.createElement('p');description.className='refined-task-location';description.textContent='客厅 → 厨房边柜 · 小禾';
+  const status=document.createElement('p');status.className='refined-task-status';
+  const bar=document.createElement('progress');bar.max=100;bar.value=70;bar.setAttribute('aria-label','杯子收纳完成进度');
+  const progress=document.createElement('div');progress.className='refined-task-progress';
+  const percent=document.createElement('span');percent.textContent='70%';progress.append(bar,percent);
+  const timing=document.createElement('div');timing.className='refined-task-timing';timing.innerHTML='<span>已运行 12 分钟</span><span>预计还需 3 分钟</span>';
+  const actions=document.createElement('div');actions.className='refined-task-actions';actions.append(view,pause);
+  cupTask.append(header,description,status,progress,timing,actions);
+  const update=()=>{status.textContent=paused()?'任务已暂停':'正在前往厨房边柜';badge.querySelector('p').textContent=paused()?'已暂停':'执行中';};
+  const previous=pause.onclick;
+  pause.onclick=event=>{previous?.call(pause,event);update();};
+  pause.querySelector('p').textContent=paused()?'继续':'暂停';update();
+}
+</script>
+<script>
+const phoneFrame=document.getElementById('viewport');
+const phoneDimmer=document.createElement('div');phoneDimmer.className='phone-dialog-dimmer';phoneDimmer.hidden=true;phoneFrame.append(phoneDimmer);
+function syncPhoneBounds(){
+ const rect=phoneFrame.getBoundingClientRect();
+ for(const [key,value] of Object.entries({left:rect.left,top:rect.top,width:rect.width,height:rect.height}))
+  document.documentElement.style.setProperty('--phone-'+key,value+'px');
+}
+new ResizeObserver(syncPhoneBounds).observe(phoneFrame);
+addEventListener('resize',syncPhoneBounds);
+window.visualViewport?.addEventListener('resize',syncPhoneBounds);
+window.visualViewport?.addEventListener('scroll',syncPhoneBounds);
+new MutationObserver(()=>{
+ phoneDimmer.hidden=!(modal.open&&modal.classList.contains('map-task-popup'));
+}).observe(modal,{attributes:true,attributeFilter:['open','class']});
+syncPhoneBounds();
+</script>
+<script>let conversationMenuAnchor=null;
+document.addEventListener('click',event=>{
+  const button=event.target.closest('.conversation-more');
+  if(button)conversationMenuAnchor=button;
+},true);
+let activeConversationMenu=null;
+function closeConversationPopover(){
+  activeConversationMenu?.remove();activeConversationMenu=null;
+}
+openConversationMenu=function(card,back,fromChat=false){
+  closeConversationPopover();
+  const anchor=conversationMenuAnchor?.isConnected?conversationMenuAnchor:modal.querySelector('.conversation-more');
+  const menu=document.createElement('div');menu.className='conversation-popover';
+  menu.setAttribute('role','dialog');menu.setAttribute('aria-label','管理对话');
+  const host=modal.open?modal:document.body;host.append(menu);activeConversationMenu=menu;
+  const frame=phoneFrame.getBoundingClientRect();
+  function position(){
+    const bounds=anchor?.getBoundingClientRect()||frame;
+    const width=Math.min(230,frame.width-32);
+    menu.style.width=width+'px';
+    menu.style.left=Math.max(frame.left+12,Math.min(bounds.right-width,frame.right-width-12))+'px';
+    menu.style.top=Math.max(frame.top+12,Math.min(bounds.bottom+6,frame.bottom-menu.offsetHeight-12))+'px';
+  }
+  function options(){
+    menu.replaceChildren();
+    for(const [label,action] of [
+      ['重命名',rename],['分享',share],['删除',remove]
+    ])menu.append(conversationButton(label,action,label==='删除'?'danger-action':''));
+    position();
+  }
+  function rename(){
+    menu.innerHTML='<label>对话名称<input maxlength="40" aria-label="对话名称"></label><div class="popover-actions"></div>';
+    const input=menu.querySelector('input');input.value=conversationTitle(card);
+    const saveName=()=>{
+      if(!input.value.trim()){input.setCustomValidity('请输入对话名称');input.reportValidity();return;}
+      conversationMeta[card.dataset.nodeId].title=input.value.trim();save();renderConversations();
+      if(fromChat){
+        const topic=modal.querySelector('.chat-topic');
+        if(topic){const node=topic.firstChild;if(node?.nodeType===Node.TEXT_NODE)node.textContent=(isDirectChat(card)?'':conversationMeta[card.dataset.nodeId].project+' · ')+input.value.trim();}
+      }
+      closeConversationPopover();
+    };
+    menu.querySelector('.popover-actions').append(conversationButton('取消',options),conversationButton('保存',saveName));
+    input.oninput=()=>input.setCustomValidity('');
+    input.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();saveName();}};
+    position();input.focus({preventScroll:true});
+  }
+  async function share(){
+    const id=card.dataset.nodeId,title=conversationTitle(card);
+    const text=[title,'小禾：'+originalProblem(card),...(chatHistory[id]||[]).map(m=>(m.from==='user'?'我':'小禾')+'：'+m.text)].join('\n\n');
+    try{
+      if(navigator.share){await navigator.share({title,text});closeConversationPopover();return;}
+      await navigator.clipboard.writeText(text);closeConversationPopover();toast('对话已复制，可以粘贴分享');
+    }catch(error){
+      if(error.name==='AbortError')return;
+      menu.innerHTML='<label>复制对话内容<textarea readonly rows="6"></textarea></label>';
+      menu.querySelector('textarea').value=text;menu.append(conversationButton('完成',closeConversationPopover));position();
+    }
+  }
+  function remove(){
+    menu.innerHTML='<p>删除这段对话？</p><small>相关任务和遥操记录仍会保留。</small><div class="popover-actions"></div>';
+    menu.querySelector('.popover-actions').append(conversationButton('取消',options),conversationButton('删除',()=>{
+      const id=card.dataset.nodeId;conversationMeta[id].deleted=true;delete chatHistory[id];delete conversationMeta[id].draft;
+      closeConversationPopover();save();renderConversations();
+      if(fromChat)closeModalPage(back);
+      else if(modal.querySelector('.archive-list'))openChatArchive();
+      toast('对话已删除');
+    },'danger-action'));position();
+  }
+  options();
+};
+document.addEventListener('pointerdown',event=>{
+  if(activeConversationMenu&&!activeConversationMenu.contains(event.target)&&!event.target.closest('.conversation-more'))closeConversationPopover();
+},true);
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&activeConversationMenu){event.preventDefault();event.stopPropagation();closeConversationPopover();}
+},true);
+modal.addEventListener('close',closeConversationPopover);
+addEventListener('resize',closeConversationPopover);
+
+// Seed complete, linked exchanges once. Existing user-written conversations stay authoritative.
+const longUseScenarios=[
+  ['收纳与桌面','书桌文件整理',[
+    ['这些收据和文件一起收吗？','收据放右侧透明袋，待签文件留在桌面。'],
+    ['写过的便签需要收进抽屉吗？','便签先留在显示器下面。'],
+    ['这两本笔记本放在哪里？','深蓝色放书架，黑色的留在桌上。'],
+    ['充电线要一起放进收纳盒吗？','手机充电线留一根，其余按长度收好。'],
+    ['左侧文件夹快满了，需要换一个吗？','用第二层的灰色文件盒，先不丢旧文件。'],
+    ['桌面整理好了，还需要调整吗？','把台灯旁边留空，明天要放电脑。']
+  ]],
+  ['衣物洗护','一周衣物洗护',[
+    ['这件针织衫能和衬衫一起洗吗？','针织衫单独放在小篮里，我来处理。'],
+    ['浅色衣物需要先洗吗？','先洗浅色，深色裤子等下一批。'],
+    ['洗衣机结束了，要立即晾衣服吗？','现在晾，衬衫用衣架，毛巾挂右侧。'],
+    ['袜子已经干了，放哪里？','配好对，放衣柜下层的小格里。'],
+    ['床单要折好放回柜子吗？','先确认晾干，再放进卧室柜子的第二层。'],
+    ['洗衣篮空了，还有待洗的吗？','今天没有了，明天再收卧室里的衣物。']
+  ]],
+  ['玩具整理','积木与玩具归位',[
+    ['这艘拼好的船需要拆开吗？','完整作品留在桌上。'],
+    ['散落的积木都放蓝盒吗？','大颗粒放蓝盒，小零件放透明格子。'],
+    ['玩具车能放进同一个盒子吗？','车放低层抽屉，积木单独收。'],
+    ['拼图还有几片找不到，要先收吗？','先放在拼图垫上，晚点我们继续找。'],
+    ['床上的小熊也要收进布篮吗？','小熊留在枕头旁，其他玩偶放布篮。'],
+    ['地面已整理好，要保留桌面的作品吗？','保留，明天孩子还想接着拼。']
+  ]],
+  ['餐食准备','家常晚餐与口味反馈',[
+    ['今天想吃哪种家常菜？','做辣椒炒肉和清炒青菜吧。'],
+    ['辣椒炒肉的辣度照上次吗？','照上次，我喜欢辣一点。'],
+    ['咸度要调整吗？','这次少放一点盐。'],
+    ['炒肉已准备好，青菜现在做吗？','现在做，青菜清淡一点。'],
+    ['今天的味道合适吗？','辣度刚好，记住这个口味。'],
+    ['下次想尝试辣子鸡和干煸豆角吗？','可以，辣度沿用今天的，盐也少一点。']
+  ]],
+  ['收纳与桌面','客厅与餐边柜整理',[
+    ['茶几上的杯子还需要用吗？','白杯留着，其他空杯收到厨房。'],
+    ['薄毯应该放哪儿？','叠好放在沙发左侧扶手上。'],
+    ['遥控器放进抽屉吗？','放在茶几托盘，方便找到。'],
+    ['餐边柜的杯子怎么排列？','常用杯放上层外侧，玻璃杯放里侧。'],
+    ['这本杂志需要上架吗？','我还没看完，留在沙发旁边。'],
+    ['靠垫和桌面都整理好了，还有其他要求吗？','把走道留出来就好。']
+  ]],
+  ['衣物洗护','床品换洗与收叠',[
+    ['今天换哪间卧室的床单？','换主卧，客房先不用。'],
+    ['床单和枕套一起收走吗？','一起放进大洗衣篮。'],
+    ['有一条薄毯，需要一起洗吗？','薄毯先留下，周末再洗。'],
+    ['干净床品放回哪层？','床单放第二层，枕套放旁边的小篮。'],
+    ['洗涤结束，要等你回来再晾吗？','直接晾好，我晚上收。'],
+    ['床品已晾好，需要提醒收取吗？','晚上七点提醒我看是否干透。']
+  ]],
+  ['玩具整理','绘本与手工材料整理',[
+    ['桌上的绘本全都上架吗？','今晚要看的两本放床头，其余上架。'],
+    ['蜡笔和水彩笔放一起吗？','分别放进两个笔盒。'],
+    ['剪好的纸片需要保留吗？','放进作品袋，别和废纸一起收。'],
+    ['画纸上没有名字，要放哪里？','先放收纳盘，我来分。'],
+    ['作品袋快满了，需要更换吗？','拿一个新的，把日期写在标签上。'],
+    ['桌面清出来了，需要留什么？','留画板和彩笔盒就好。']
+  ]],
+  ['收纳与桌面','玄关收纳与出门准备',[
+    ['门口的包需要放进柜子吗？','通勤包挂在右边的挂钩。'],
+    ['钥匙和门卡放一起吗？','都放进门口的小托盘。'],
+    ['快递纸箱可以收走吗？','小的拆平，大的先留两天。'],
+    ['雨伞已经干了，要收进柜子吗？','收进玄关左侧的伞桶。'],
+    ['常穿的鞋放哪一层？','放下层，给拖鞋留一个位置。'],
+    ['出门用品都放好了，还有需要准备的吗？','明天要用的购物袋也挂在包旁边。']
+  ]]
+];
+function addLongUseChat(id,scenario,time,label){
+  const existing=conversationMeta[id];
+  if(existing?.deleted)return;
+  const [project,title,pairs]=scenario;
+  const card=pendingCards[0].cloneNode(true);card.dataset.nodeId=id;
+  card.querySelectorAll('[data-node-id]').forEach(n=>n.removeAttribute('data-node-id'));
+  card.querySelector('[data-name="Task heading"] p').textContent=title;
+  card.querySelector('[data-name="Task content"]>p').textContent=pairs[0][0];
+  const messages=[];
+  pairs.forEach(([question,answer],index)=>{
+    if(index)messages.push({from:'robot',text:question,time:time+index*240000});
+    messages.push({from:'user',text:answer,time:time+index*240000+60000});
+  });
+  if(!existing){
+    conversationMeta[id]={project,title:label+' · '+title,created:time,archived:false,seed:true};
+    chatHistory[id]=messages;requests[id]={answer:pairs.at(-1)[1],done:true,updated:messages.at(-1).time};
+  }
+  chatCards.set(id,card);
+}
+const demoAnchor=new Date('2026-11-23T12:00:00+08:00').getTime();
+for(let week=0;week<8;week++){
+  longUseScenarios.forEach((scenario,index)=>{
+    const time=demoAnchor-(21+week*7+index)*86400000;
+    const label=new Date(time).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'});
+    addLongUseChat('long-use-'+week+'-'+index,scenario,time,label);
+  });
+}
+longUseScenarios.forEach((scenario,index)=>addLongUseChat('recent-use-'+index,scenario,demoAnchor-(index+1)*86400000,'近期'));
+renderConversations();save();
+</script><script>// Local demonstration rules: no remote AI or robot execution is implied.
+const demoTaskSpecs=[
+  {test:/洗碗|刷碗|洗.*餐具/,name:'清洗餐具',project:'收纳与桌面',steps:'先收拢用过的餐具，清理残渣，再按材质分类清洗。'},
+  {test:/洗衣|洗.*衣服|衣物|洗.*床单|洗.*毛巾/,name:'清洗衣物',project:'衣物洗护',steps:'先分类衣物，再检查口袋和洗护标签，确认后放入洗衣机。'},
+  {test:/晾衣|晾.*衣服|收衣|叠衣|折.*衣服/,name:'整理衣物',project:'衣物洗护',steps:'先确认衣物是否干透，再按你的要求晾晒或折叠归位。'},
+  {test:/玩具|积木|拼图|玩偶/,name:'整理玩具',project:'玩具整理',steps:'完整的积木作品先保留，散件分类收纳；不确定的物品会先问你。'},
+  {test:/做饭|做.*菜|做.*鸡|做.*肉|晚餐|午餐|早餐|想吃|吃.*饭|吃.*肉|吃.*菜|吃.*鸡|煮饭|准备.*餐/,name:'准备家常餐食',project:'餐食准备',steps:'先确认人数、忌口和食材，再安排备菜。'},
+  {test:/杯子|杯具|碗|餐具|餐桌/,name:'收纳餐桌杯具',project:'收纳与桌面',steps:'先区分还在使用的杯具，再把空杯具送到厨房；不确定的会先问你。'},
+  {test:/书桌|桌面|文件|书架|收据/,name:'整理桌面物品',project:'收纳与桌面',steps:'文件和收据先保留，文具分类归位；不确定归属的物品单独确认。'},
+  {test:/玄关|鞋柜|拖鞋|钥匙/,name:'整理玄关',project:'收纳与桌面',steps:'先整理鞋子和散落物品，钥匙和私人物品按已确认的位置归位。'},
+  {test:/收拾|整理|收纳|打扫|扫地|拖地|清理|清洁/,name:'家务整理',project:'收纳与桌面',steps:'先整理散落物品，保留私人物品；遇到不确定的归属或位置会向你确认。'}
+];
+function chatLinkedPlan(card){return plans.find(p=>p.id===conversationMeta[card.dataset.nodeId]?.taskId);}
+function demoTaskFromText(text){
+  const spec=demoTaskSpecs.find(s=>s.test.test(text));if(!spec)return null;
+  const task={name:spec.name,project:spec.project,instructions:text,mode:'immediate',repeat:'仅一次',demoStatus:'待开始',progress:0};
+  if(/床单/.test(text))task.name='清洗床单';
+  else if(/毛巾/.test(text))task.name='清洗毛巾';
+  else if(/书桌/.test(text))task.name='整理书桌';
+  else if(/收据/.test(text))task.name='整理收据';
+  else if(/积木/.test(text))task.name='整理积木';
+  else if(/拖地/.test(text))task.name='拖地清洁';
+  else if(/扫地/.test(text))task.name='清扫地面';
+  const clock=text.match(/(?:([01]?\d|2[0-3])[:：]([0-5]\d)|([一二三四五六七八九十两\d]{1,3})点(半)?)/);
+  if(clock||/明天|后天|每天|每周|工作日|晚上|下午|早上/.test(text)){
+    task.mode=/每天|每周|工作日/.test(text)?'recurring':'scheduled';
+    const date=new Date();date.setDate(date.getDate()+(/后天/.test(text)?2:/明天/.test(text)?1:0));
+    task.date=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai'}).format(date);
+    if(clock){const n={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'十一':11,'十二':12};let hour=clock[1]!==undefined?+clock[1]:(n[clock[3]]??Number(clock[3]));if(/下午|晚上/.test(text)&&hour<12)hour+=12;if(hour>23)hour=NaN;task.time=Number.isFinite(hour)?String(hour).padStart(2,'0')+':'+(clock[2]|| (clock[4]?'30':'00')):undefined;}
+    if(!task.time)task.mode='immediate'; // Do not invent an execution time.
+    if(task.mode==='recurring')task.repeat=/工作日/.test(text)?'工作日':/每周/.test(text)?'每周':'每天';
+  }
+  return {...task,steps:spec.steps};
+}
+function demoHouseholdReply(card,text,messages){
+  const direct=isDirectChat(card),linked=chatLinkedPlan(card);
+  const context=sourceTitle(card)+' '+originalProblem(card)+' '+(conversationMeta[card.dataset.nodeId]?.title||'')+' '+messages.slice(-6).map(m=>m.text).join(' ');
+  const respond=text=>({text});
+  if(/^(谢谢|谢啦|辛苦了|多谢|好的谢谢)[！!。\s]*$/.test(text))return respond('不客气。之后有拿不准的物品或位置，我会先向你确认。');
+  if(/^(你好|嗨|hello|在吗)[！!？?。\s]*$/i.test(text))return respond('我在。你可以让我整理桌面、安排洗衣或准备晚餐，也可以补充正在进行的家务要求。');
+  if(/(?:进度|做到哪|怎么样了|还要多久|完成了吗|开始了吗)/.test(text))return respond(linked?`「${linked.name}」目前${linked.demoStatus||'待开始'}，进度 ${linked.progress||0}%。你的要求已保存在任务卡，可以从任务页查看。这是演示数据，不代表真实机器人状态。`:'这段对话还没有关联执行任务。你可以告诉我具体想做什么，我会建立任务并保留这里的讨论。');
+  if(linked&&/取消|别做了|不用做了|暂停|先停|继续执行|恢复执行/.test(text)){
+    const status=/取消|别做了|不用做了/.test(text)?'已取消':/继续执行|恢复执行/.test(text)?'待开始':'已暂停';
+    return {text:`已将「${linked.name}」标为${status}，任务卡也会同步更新。`,update:{demoStatus:status}};
+  }
+  if(!/帮我|请.*做|安排|布置|准备.*餐|想吃/.test(text)&&/喜欢|好吃|太咸|少盐|少辣|不辣|微辣|偏辣|偏咸|忌口/.test(text)&&/菜|餐|吃|味|盐|辣/.test(text+context)){
+    const preferences=[];if(/微辣|少辣/.test(text))preferences.push('微辣');else if(/不辣|不要辣/.test(text))preferences.push('不放辣');else if(/辣/.test(text))preferences.push('偏辣');
+    if(/太咸|少盐|不要太咸/.test(text))preferences.push('少盐');else if(/偏咸|咸咸/.test(text))preferences.push('偏咸');
+    settings.demoTaste={...(settings.demoTaste||{}),note:text,labels:preferences,updated:Date.now()};
+    return respond(`记下了${preferences.length?'：'+preferences.join('、'): '你这次的口味反馈'}。下次讨论菜单时会参考；如果其他家人一起吃，我会再确认大家的口味。`);
+  }
+  const candidate=demoTaskFromText(text);
+  const command=direct&&Boolean(candidate)&&! /已经.*完|刚刚.*完|昨天.*了|怎么|如何|推荐|吃什么|放哪里|放哪儿|是什么/.test(text)&&(!/能不能|可以吗|吗[？?]?$/.test(text)||/帮我|替我|能不能.*(?:洗|整理|打扫|做饭)/.test(text));
+  if(command&&(!linked||/另外|再帮|新任务|再安排|再布置/.test(text))){
+    const task=demoTaskFromText(text);
+    if(task){return {text:`已添加「${task.name}」，可以在任务页查看${task.mode==='immediate'?'，当前待开始':'，'+(task.date||task.repeat)+' '+task.time}。${task.steps}${task.project==='餐食准备'?'几个人吃？有没有不能吃的食材？':''}${/明天|后天|晚上|下午|早上/.test(text)&&!task.time?'你希望几点开始？补充时间后我会更新预约。':''}`,task};}
+    return respond('你想让我整理哪些物品，或准备什么餐食？告诉我具体内容，我就能建立任务。');
+  }
+  if(linked&&/明天|后天|\d[:：]\d|点|下午|晚上|每天|工作日|每周/.test(text)){
+    const timing=demoTaskFromText(linked.name+' '+text);
+    if(timing?.time){if(!/明天|后天/.test(text)&&linked.date)timing.date=linked.date;return {text:`「${linked.name}」已更新为${timing.mode==='recurring'?timing.repeat:timing.date} ${timing.time}，原来的执行要求会保留。`,update:{mode:timing.mode,date:timing.date,time:timing.time,repeat:timing.repeat}};}
+  }
+  if(/不要扔|不丢|保留|留着|别动|不动|不用拆|不要拆|不拆|保持原样/.test(text))return respond('这部分会保留原样，不丢弃、不拆开。其余物品继续按已确认的规则整理，不确定的先单独放好再问你。');
+  if(/放|收进|抽屉|柜|盒|篮|架|上层|下层|左边|右边|第二层/.test(text))return respond(`好的，按你说的「${text.replace(/[。！!]$/,'')}」处理。移动前会核对物品和收纳位置；找不到指定位置时会先询问，不会随意换地方。`);
+  if(/洗|衣|衫|毛巾|床单|晾/.test(text+context))return respond(/怎么|如何|能不能|可以吗/.test(text)?'先看洗护标签，深浅色分开，口袋里的物品取出。针织或需要手洗的衣物单独放好。你希望我先处理哪一批？':'这条洗护要求已记下。会先确认衣物标签和分类；洗涤结束后再确认晾晒或折叠，不把“放入洗衣机”当成整项任务完成。');
+  if(/积木|玩具|拼图|玩偶/.test(text+context))return respond('完整作品和散件会分开处理。请确认完整作品要保留在哪里，散件是否仍按现有盒子的分类收纳？');
+  if(/菜|做饭|餐|吃|几个人|人吃/.test(text+context)){
+    const taste=settings.demoTaste?.labels?.join('、');
+    if(/人|忌口|花生|海鲜|过敏|不吃|不能吃/.test(text))return respond(`记下这次用餐要求：「${text}」。备菜时会按这个人数和忌口安排，菜单确定前也会再核对一次。`);
+    return respond(/推荐|吃什么|菜单/.test(text)?`可以考虑辣椒炒肉、清炒豆角和番茄蛋汤${taste?'，参考你之前的「'+taste+'」偏好调整调味':''}。今天几个人吃，有没有需要避开的食材？`:'餐食要求已记下。先确认用餐人数、忌口和现有食材，再决定菜单；调味会参考你之前的反馈。');
+  }
+  if(/怎么|如何|能不能|可以吗/.test(text))return respond('可以一起确认做法。你希望处理哪些物品、最终放在哪里？说清这两点，我会按你的要求记录，拿不准的部分再单独问你。');
+  if(/^(好|好的|行|可以|确认|就这样|开始吧)[。！!\s]*$/.test(text))return respond(linked?`好的，「${linked.name}」的要求已经确认，保留在任务卡和本次对话里。`:'好的，按前面确认的要求处理。遇到新的不确定情况，我会另行询问。');
+  return respond(linked?`已为「${linked.name}」补充这条要求。你还可以告诉我哪些物品要保留、怎么分类，或者什么时候开始。`:'这条说明已留在当前对话。你可以继续补充物品、位置或做法；如果要新增家务任务，可以直接说“帮我整理书桌”。');
+}
+function linkChatTask(card,task,text,time){
+  const id=card.dataset.nodeId,taskId='task-'+(crypto.randomUUID?.()||Date.now()+'-'+Math.random().toString(36).slice(2));
+  const {steps,...data}=task;plans.push({...data,id:taskId,conversationId:id,created:time,updated:time});
+  conversationMeta[id].taskId=taskId;conversationMeta[id].project=task.project;conversationMeta[id].title=task.name;
+  renderPlans();renderConversations();
+}
+function updateChatTask(card,update){
+  const plan=chatLinkedPlan(card);if(!plan)return;Object.assign(plan,update,{updated:Date.now()});renderPlans();
+}
+function linkPlanConversation(plan,existing){
+  const time=Date.now(),id=existing?.conversationId||'chat-task-'+(crypto.randomUUID?.()||time+'-'+Math.random().toString(36).slice(2));
+  plan.id=existing?.id||'task-'+id;plan.conversationId=id;plan.created=existing?.created||time;
+  plan.updated=time;
+  plan.demoStatus=existing?.demoStatus||'待开始';plan.progress=existing?.progress||0;
+  const card=chatCards.get(id)||directChatCard(id);chatCards.set(id,card);
+  conversationMeta[id]={...conversationMeta[id],direct:true,project:demoTaskFromText(plan.name)?.project||'收纳与桌面',title:plan.name,created:conversationMeta[id]?.created||time,taskId:plan.id};
+  chatHistory[id] ||= [];
+  chatHistory[id].push({from:'user',time,text:(existing?'更新任务：':'布置任务：')+plan.name+(plan.instructions?'。'+plan.instructions:'')},
+    {from:'robot',time,text:`「${plan.name}」已${existing?'更新':'添加'}到任务页，当前${plan.demoStatus}。你可以在这里补充要求，或从任务卡继续对话。`});
+}
+function renderLinkedTaskCards(){
+  const tiles=taskBody.querySelector('.task-tiles');if(!tiles)return;
+  tiles.querySelectorAll('.linked-task-tile').forEach(n=>n.remove());
+  for(const plan of plans.filter(p=>p.conversationId).slice().sort((a,b)=>(b.updated||b.created||0)-(a.updated||a.created||0))){
+    const tile=document.createElement('button');tile.type='button';tile.className='task-tile linked-task-tile';
+    tile.innerHTML='<span class="task-card-heading"><strong></strong><small class="task-card-state"></small></span><span class="task-card-description"></span><span class="task-card-progress"><progress max="100"></progress><small></small></span>';
+    tile.querySelector('strong').textContent=plan.name;
+    tile.querySelector('.task-card-state').textContent=plan.demoStatus||'待开始';
+    tile.querySelector('.task-card-description').textContent=(plan.mode==='immediate'?'随时开始':[plan.repeat!=='仅一次'?plan.repeat:plan.date,plan.time].filter(Boolean).join(' '))+' · '+(plan.instructions||'点击补充执行要求');
+    tile.querySelector('progress').value=plan.progress||0;tile.querySelector('progress').setAttribute('aria-label',plan.name+'进度');tile.querySelector('.task-card-progress small').textContent=(plan.progress||0)+'%';
+    tile.onclick=()=>{const card=chatCards.get(plan.conversationId);if(card)openGuidanceChat(card,conversationTitle(card));};
+    tile.style.order=String(-10000+tiles.querySelectorAll('.linked-task-tile').length);
+    tiles.append(tile);
+  }
+  const input=taskBody.querySelector('.task-search input');if(input)input.dispatchEvent(new Event('input'));
+}
+document.addEventListener('taskplanschange',renderLinkedTaskCards);
+const taskSearchInput=taskBody.querySelector('.task-search input');
+taskSearchInput?.addEventListener('input',()=>{for(const tile of taskBody.querySelectorAll('.linked-task-tile'))tile.hidden=!tile.textContent.includes(taskSearchInput.value.trim());});
+renderLinkedTaskCards();
+</script>
+</body></html>
